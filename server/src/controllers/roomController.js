@@ -22,4 +22,16 @@ module.exports = {
       console.log(error);
     }
   },
+  updateRoom: async (req, res, next) => {
+    const roomName = req.body.roomName;
+    const roomId = req.params.roomid;
+    try {
+      const updateRoom = await Room.findByIdAndUpdate({_id: roomId});
+      updateRoom.room_name = roomName;
+      await updateRoom.save();
+      res.json({message: `Room ${roomName} Updated`, success: true});
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };

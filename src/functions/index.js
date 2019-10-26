@@ -18,3 +18,15 @@ export const AddNewRoom = async roomName => {
   );
   return response;
 };
+
+export const UpdateRoom = async (roomName, roomId) => {
+  const token = await getUserToken();
+  const response = await axios.put(
+    `${Host}/room/${roomId}`,
+    {
+      roomName,
+    },
+    {headers: {Authorization: `${token}`}},
+  );
+  return response;
+};

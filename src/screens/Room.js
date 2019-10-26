@@ -11,7 +11,7 @@ import {Icon} from 'native-base';
 import Header from '../components/header';
 import {ThemeColor} from '../Assets/constantColor';
 import ModalAddNewRoom from '../components/modalRoom';
-import {AddNewRoom, getUserToken} from '../functions';
+import {AddNewRoom, getUserToken, UpdateRoom} from '../functions';
 
 import {connect} from 'react-redux';
 import {actionGetAllRoom} from '../redux/actions/actionRoom';
@@ -22,6 +22,7 @@ class Room extends React.Component {
     this.state = {
       isModalVisble: false,
       inputRoomName: '',
+      roomId: '',
     };
   }
   async componentDidMount() {
@@ -48,6 +49,21 @@ class Room extends React.Component {
     await this.props.actionGetAllRoom(token);
   };
 
+  handleUpdateRoom = async (Id, roomName) => {
+    this.setState({isModalVisble: true, inputRoomName: roomName, roomId: Id});
+  };
+
+  handleUpdateNewRoom = async () => {
+    const token = await getUserToken();
+    const res = await UpdateRoom(this.state.inputRoomName, this.state.roomId);
+    ToastAndroid.showWithGravity(
+      `${res.data.message}`,
+      ToastAndroid.LONG,
+      ToastAndroid.CENTER,
+    );
+    await this.props.actionGetAllRoom(token);
+    this.setState({isModalVisble: false});
+  };
   render() {
     return (
       <View>
@@ -58,28 +74,44 @@ class Room extends React.Component {
           inputValue={this.state.inputRoomName}
           onSubmit={() => this.handleAddNewRoom()}
         />
+        <ModalAddNewRoom
+          isVisible={this.state.isModalVisble}
+          onCancel={() => this.setState({isModalVisble: false})}
+          inputChangeValue={text => this.setState({inputRoomName: text})}
+          inputValue={this.state.inputRoomName}
+          onSubmit={() => this.handleUpdateNewRoom()}
+        />
         <Header
           titleText="Room"
           stylesHeader={{backgroundColor: ThemeColor, height: 50}}
         />
         <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
-          {this.props.allRoom.data.data.map(item => {
-            return (
-              <View
-                key={item._id}
-                style={{
-                  borderWidth: 4,
-                  height: 80,
-                  width: 80,
-                  margin: 10,
-                  paddingTop: 15,
-                }}>
-                <Text style={{alignSelf: 'center', fontSize: 30}}>
-                  {item.room_name}
-                </Text>
-              </View>
-            );
-          })}
+          {this.props.allRoom.data <= 0 ? (
+            <View />
+          ) : (
+            this.props.allRoom.data.data.map(item => {
+              return (
+                <TouchableOpacity
+                  key={item._id}
+                  onPress={() =>
+                    this.handleUpdateRoom(item._id, item.room_name)
+                  }>
+                  <View
+                    style={{
+                      borderWidth: 4,
+                      height: 80,
+                      width: 80,
+                      margin: 10,
+                      paddingTop: 15,
+                    }}>
+                    <Text style={{alignSelf: 'center', fontSize: 30}}>
+                      {item.room_name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })
+          )}
 
           <TouchableOpacity
             onPress={() => this.setState({isModalVisble: true})}>
