@@ -9,6 +9,7 @@ class Setting extends React.Component {
     return (
       <View>
         <Text>Setting</Text>
+        <Text>LOGOUT</Text>
       </View>
     );
   }
