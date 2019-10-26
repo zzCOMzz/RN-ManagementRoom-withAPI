@@ -6,6 +6,7 @@ const app = Express();
 
 const AuthAdminRoutes = require('./routes/auth');
 const RoomRoutes = require('./routes/room');
+const CusRoutes = require('./routes/customer');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -18,6 +19,7 @@ app.use(cors());
 app.group('/api/v2', router => {
   router.use('/auth', AuthAdminRoutes);
   router.use('/room', RoomRoutes);
+  router.use('/customer', CusRoutes);
 });
 
 module.exports = app;

@@ -25,7 +25,7 @@ class ModalAddCustomer extends React.Component {
           animationInTiming={1500}
           animationOut="bounceOut"
           animationOutTiming={1000}
-          isVisible={this.state.modalVisible}
+          isVisible={this.props.modalVisible}
           style={{
             marginHorizontal: 40,
             marginVertical: 20,
@@ -45,19 +45,28 @@ class ModalAddCustomer extends React.Component {
                 <Label>
                   <Text>Name*</Text>
                 </Label>
-                <Input />
+                <Input
+                  value={this.props.name}
+                  onChangeText={text => this.props.changeName(text)}
+                />
               </Item>
               <Item stackedLabel style={{marginVertical: '6%'}}>
                 <Label>
                   <Text>Identity Number*</Text>
                 </Label>
-                <Input />
+                <Input
+                  value={this.props.identity}
+                  onChangeText={text => this.props.changeIdentity(text)}
+                />
               </Item>
               <Item stackedLabel style={{marginVertical: '6%'}}>
                 <Label>
                   <Text>Phone Number*</Text>
                 </Label>
-                <Input />
+                <Input
+                  value={this.props.phone}
+                  onChangeText={text => this.props.changePhone(text)}
+                />
               </Item>
               <View style={{marginHorizontal: 10, marginTop: 20}}>
                 <Text>Photo (Optional)</Text>
@@ -70,10 +79,10 @@ class ModalAddCustomer extends React.Component {
                 justifyContent: 'space-around',
                 marginTop: 60,
               }}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => this.props.onCancel()}>
                 <Text style={{fontSize: 22}}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => alert('save')}>
+              <TouchableOpacity onPress={() => this.props.onSubmit()}>
                 <Text style={{fontSize: 22}}>Save</Text>
               </TouchableOpacity>
             </View>

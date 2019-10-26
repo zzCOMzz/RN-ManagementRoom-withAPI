@@ -30,3 +30,11 @@ export const UpdateRoom = async (roomName, roomId) => {
   );
   return response;
 };
+
+export const addCustomer = async form => {
+  const token = await getUserToken();
+  const response = await axios.post(`${Host}/customer`, form, {
+    headers: {Authorization: `${token}`},
+  });
+  return response;
+};
