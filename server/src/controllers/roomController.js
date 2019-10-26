@@ -14,4 +14,12 @@ module.exports = {
       console.log(error);
     }
   },
+  getAllRoom: async (req, res, next) => {
+    try {
+      const allRoom = await Room.find({});
+      res.json({data: allRoom});
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };

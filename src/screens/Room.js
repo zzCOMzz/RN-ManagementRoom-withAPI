@@ -1,13 +1,20 @@
 import React from 'react';
-import {View, Text, Alert, TouchableOpacity, ToastAndroid} from 'react-native';
+import {
+  View,
+  Text,
+  Alert,
+  TouchableOpacity,
+  ToastAndroid,
+  FlatList,
+} from 'react-native';
 import {Icon} from 'native-base';
 import Header from '../components/header';
-import AsyncStorage from '@react-native-community/async-storage';
 import {ThemeColor} from '../Assets/constantColor';
 import ModalAddNewRoom from '../components/modalRoom';
-import axios from 'axios';
-import {Host} from '../functions/Host';
 import {AddNewRoom, getUserToken} from '../functions';
+
+import {connect} from 'react-redux';
+import {actionGetAllRoom} from '../redux/actions/actionRoom';
 
 class Room extends React.Component {
   constructor(props) {
@@ -24,9 +31,13 @@ class Room extends React.Component {
         {text: 'Login', onPress: () => this.props.navigation.navigate('Auth')},
       ]);
     }
+    await this.props.actionGetAllRoom(token);
+    await this.props.allRoom.data;
+    console.log(this.props.allRoom.data);
   }
 
   handleAddNewRoom = async () => {
+    const token = await getUserToken();
     this.setState({isModalVisble: false});
     const response = await AddNewRoom(this.state.inputRoomName);
     ToastAndroid.showWithGravity(
@@ -34,6 +45,7 @@ class Room extends React.Component {
       ToastAndroid.LONG,
       ToastAndroid.CENTER,
     );
+    await this.props.actionGetAllRoom(token);
   };
 
   render() {
@@ -51,6 +63,24 @@ class Room extends React.Component {
           stylesHeader={{backgroundColor: ThemeColor, height: 50}}
         />
         <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
+          {this.props.allRoom.data.data.map(item => {
+            return (
+              <View
+                key={item._id}
+                style={{
+                  borderWidth: 4,
+                  height: 80,
+                  width: 80,
+                  margin: 10,
+                  paddingTop: 15,
+                }}>
+                <Text style={{alignSelf: 'center', fontSize: 30}}>
+                  {item.room_name}
+                </Text>
+              </View>
+            );
+          })}
+
           <TouchableOpacity
             onPress={() => this.setState({isModalVisble: true})}>
             <View style={{borderWidth: 4, height: 80, width: 80, margin: 10}}>
@@ -64,4 +94,12 @@ class Room extends React.Component {
   }
 }
 
-export default Room;
+const mapStateToProps = state => {
+  return {
+    allRoom: state.getAllRoom,
+  };
+};
+export default connect(
+  mapStateToProps,
+  {actionGetAllRoom},
+)(Room);
