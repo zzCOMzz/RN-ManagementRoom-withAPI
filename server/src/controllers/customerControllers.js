@@ -9,7 +9,7 @@ module.exports = {
       const newCus = await new Customer({
         name: customerName,
         identity_number: customerID,
-        phone_number: customerPhone,
+        phone_number: Number(customerPhone),
       });
 
       await newCus.save();
@@ -32,13 +32,21 @@ module.exports = {
     const cusPhone = req.body.customerPhone;
     const cus_Id = req.params.cusid;
     try {
-      const updateCus = await Customer.findByIdAndUpdate({_id: cus_Id});
-      updateCus.customer_name = cusName;
-      updateCus.identity_number = cusId;
-      updateCus.phone_number = cusPhone;
+      const updateCus = await Customer.findByIdAndUpdate(
+        {_id: cus_Id},
+        {
+          name: cusName,
+          identity_number: cusId,
+          phone_number: cusPhone,
+        },
+        (err, customer) => {
+          if (err) {
+            res.json({message: 'Error On Update', success: false});
+          }
 
-      await updateCus.save();
-      res.json({message: `Customer ${cusName} Updated`, success: true});
+          res.json({message: `Customer ${cusName} Updated`, success: true});
+        },
+      );
     } catch (error) {
       console.log(error);
     }

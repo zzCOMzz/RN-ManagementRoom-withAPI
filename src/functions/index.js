@@ -38,3 +38,11 @@ export const addCustomer = async form => {
   });
   return response;
 };
+
+export const updateCustomer = async (form, cusId) => {
+  const token = await getUserToken();
+  const response = await axios.put(`${Host}/customer/${cusId}`, form, {
+    headers: {Authorization: `${token}`},
+  });
+  return response;
+};
