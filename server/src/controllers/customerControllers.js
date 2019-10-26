@@ -7,7 +7,7 @@ module.exports = {
     const customerPhone = req.body.customerPhone;
     try {
       const newCus = await new Customer({
-        customer_name: customerName,
+        name: customerName,
         identity_number: customerID,
         phone_number: customerPhone,
       });
