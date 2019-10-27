@@ -1,7 +1,6 @@
-import React from 'react';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-
+import LoadingScreen from '../screens/Loading';
 import LoginScreen from '../screens/Login';
 import BottomTabStack from './bottomTabNavigatior';
 
@@ -14,6 +13,14 @@ const AuthStack = createStackNavigator({
   },
 });
 
+const LoadingStack = createStackNavigator({
+  Loading: {
+    screen: LoadingScreen,
+    navigationOptions: {
+      header: null,
+    },
+  },
+});
 const AppStackNavigator = createStackNavigator({
   BottomTab: {
     screen: BottomTabStack,
@@ -26,9 +33,10 @@ const AppStack = createSwitchNavigator(
   {
     Auth: AuthStack,
     App: AppStackNavigator,
+    Loading: LoadingStack,
   },
   {
-    initialRouteName: 'App',
+    initialRouteName: 'Loading',
   },
 );
 

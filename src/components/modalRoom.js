@@ -21,7 +21,7 @@ class RoomModal extends React.Component {
         }}>
         <View style={{flex: 1}}>
           <Text style={{alignSelf: 'center', fontSize: 30, fontWeight: 'bold'}}>
-            Add Room
+            {this.props.title}
           </Text>
           <View style={{marginTop: 40}}>
             <Item style={{marginVertical: '6%'}}>

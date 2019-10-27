@@ -13,6 +13,7 @@ class Customer extends React.Component {
     super(props);
     this.state = {
       isModalVisible: false,
+      isModalAddVisible: false,
       name: '',
       identity: '',
       phoneNumber: '',
@@ -24,7 +25,6 @@ class Customer extends React.Component {
     const token = await getUserToken();
     await this.props.actionGetAllCustomer(token);
     await this.props.allMyCustomer.data;
-    console.log('Customer ', this.props.allMyCustomer.data);
   }
 
   showModal = () => {
@@ -73,7 +73,7 @@ class Customer extends React.Component {
       },
       this.state.customerId,
     );
-    console.log(res, 'RESPONSE UPDATE');
+
     ToastAndroid.showWithGravity(
       `${res.data.message}`,
       ToastAndroid.LONG,
@@ -97,9 +97,9 @@ class Customer extends React.Component {
           changeIdentity={text => this.setState({identity: text})}
           phone={this.state.phoneNumber}
           changePhone={text => this.setState({phoneNumber: text})}
-          modalVisible={this.state.isModalVisible}
-          onCancel={() => this.setState({isModalVisible: false})}
-          onSubmit={() => this.handleAddCustomer()}
+          modalVisible={this.state.isModalAddVisible}
+          onCancel={() => this.setState({isModalAddVisible: false})}
+          onSubmit={() => this.handleUpdateCustomer()}
         />
         <ModalAddCustomer
           name={this.state.name}
@@ -110,7 +110,7 @@ class Customer extends React.Component {
           changePhone={text => this.setState({phoneNumber: text})}
           modalVisible={this.state.isModalVisible}
           onCancel={() => this.setState({isModalVisible: false})}
-          onSubmit={() => this.handleUpdateCustomer()}
+          onSubmit={() => this.handleAddCustomer()}
         />
         <Header
           titleText="Customer"

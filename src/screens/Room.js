@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Alert,
-  TouchableOpacity,
-  ToastAndroid,
-  FlatList,
-} from 'react-native';
+import {View, Text, Alert, TouchableOpacity, ToastAndroid} from 'react-native';
 import {Icon} from 'native-base';
 import Header from '../components/header';
 import {ThemeColor} from '../Assets/constantColor';
@@ -21,6 +14,7 @@ class Room extends React.Component {
     super(props);
     this.state = {
       isModalVisble: false,
+      isModalAdd: false,
       inputRoomName: '',
       roomId: '',
     };
@@ -34,18 +28,17 @@ class Room extends React.Component {
     }
     await this.props.actionGetAllRoom(token);
     await this.props.allRoom.data;
-    console.log(this.props.allRoom.data);
   }
 
   handleAddNewRoom = async () => {
-    const token = await getUserToken();
-    this.setState({isModalVisble: false});
     const response = await AddNewRoom(this.state.inputRoomName);
+    this.setState({isModalAdd: false});
     ToastAndroid.showWithGravity(
       `${response.data.message}`,
       ToastAndroid.LONG,
       ToastAndroid.CENTER,
     );
+    const token = await getUserToken();
     await this.props.actionGetAllRoom(token);
   };
 
@@ -68,18 +61,20 @@ class Room extends React.Component {
     return (
       <View>
         <ModalAddNewRoom
-          isVisible={this.state.isModalVisble}
-          onCancel={() => this.setState({isModalVisble: false})}
-          inputChangeValue={text => this.setState({inputRoomName: text})}
-          inputValue={this.state.inputRoomName}
-          onSubmit={() => this.handleAddNewRoom()}
-        />
-        <ModalAddNewRoom
+          title="Update Room"
           isVisible={this.state.isModalVisble}
           onCancel={() => this.setState({isModalVisble: false})}
           inputChangeValue={text => this.setState({inputRoomName: text})}
           inputValue={this.state.inputRoomName}
           onSubmit={() => this.handleUpdateNewRoom()}
+        />
+        <ModalAddNewRoom
+          title="Add New Room"
+          isVisible={this.state.isModalAdd}
+          onCancel={() => this.setState({isModalAdd: false})}
+          inputChangeValue={text => this.setState({inputRoomName: text})}
+          inputValue={this.state.inputRoomName}
+          onSubmit={() => this.handleAddNewRoom()}
         />
         <Header
           titleText="Room"
@@ -112,9 +107,7 @@ class Room extends React.Component {
               );
             })
           )}
-
-          <TouchableOpacity
-            onPress={() => this.setState({isModalVisble: true})}>
+          <TouchableOpacity onPress={() => this.setState({isModalAdd: true})}>
             <View style={{borderWidth: 4, height: 80, width: 80, margin: 10}}>
               <Icon name="add" style={{fontSize: 50, alignSelf: 'center'}} />
               <Text style={{alignSelf: 'center'}}>ADD</Text>

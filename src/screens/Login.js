@@ -56,7 +56,7 @@ class Login extends React.Component {
             AsyncStorage.setItem('token', data.token);
             AsyncStorage.setItem('AdminId', data.adminId);
             this.setState({isLoading: false});
-            return this.props.navigation.navigate('App');
+            return this.props.navigation.navigate('Loading');
           } else {
             ToastAndroid.showWithGravity(
               `${data.message}`,
