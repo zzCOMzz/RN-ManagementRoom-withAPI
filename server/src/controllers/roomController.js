@@ -1,4 +1,5 @@
 const Room = require('../models/roomModel');
+const OrderModel = require('../models/order');
 
 module.exports = {
   addNewRoom: async (req, res, next) => {
@@ -16,7 +17,10 @@ module.exports = {
   },
   getAllRoom: async (req, res, next) => {
     try {
-      const allRoom = await Room.find({});
+      const allRoom = await Room.find({})
+        .populate('order_id')
+        .populate('customer_id');
+
       res.json({data: allRoom});
     } catch (error) {
       console.log(error);
@@ -36,12 +40,26 @@ module.exports = {
   },
   deleteRoom: async (req, res, next) => {
     const roomId = req.params.roomid;
+    const orderId = req.params.orderId;
     try {
+      await OrderModel.findByIdAndDelete({_id: orderId});
       const roomDel = await Room.findByIdAndDelete({_id: roomId});
       res.json({
         statusCode: 200,
         message: `Room ${roomDel.room_name} was Deleted`,
       });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  findRoom: async (req, res, next) => {
+    const roomId = req.params.roomid;
+    try {
+      const room = await Room.findById({_id: roomId})
+        .populate('customer_id')
+        .populate('order_id');
+
+      res.status(200).json({data: room, success: true});
     } catch (error) {
       console.log(error);
     }

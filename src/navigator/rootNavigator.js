@@ -3,7 +3,7 @@ import {createStackNavigator} from 'react-navigation-stack';
 import LoadingScreen from '../screens/Loading';
 import LoginScreen from '../screens/Login';
 import BottomTabStack from './bottomTabNavigatior';
-
+import CheckOutScreen from '../screens/CheckOut';
 const AuthStack = createStackNavigator({
   Login: {
     screen: LoginScreen,
@@ -28,7 +28,14 @@ const AppStackNavigator = createStackNavigator({
       header: null,
     },
   },
+  CheckOut: {
+    screen: CheckOutScreen,
+    navigationOptions: {
+      header: null,
+    },
+  },
 });
+
 const AppStack = createSwitchNavigator(
   {
     Auth: AuthStack,

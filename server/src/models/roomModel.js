@@ -10,6 +10,14 @@ const RoomSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  order_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'Order',
+  },
+  customer_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'Customer',
+  },
 });
 
 module.exports = mongoose.model('Room', RoomSchema);

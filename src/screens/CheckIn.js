@@ -10,6 +10,7 @@ import {connect} from 'react-redux';
 import {getUserToken, addNewOrder} from '../functions';
 import {actionGetAllCustomer} from '../redux/actions/actionCustomer';
 import {actionGetAllRoom} from '../redux/actions/actionRoom';
+import {actionGetRoomById} from '../redux/actions/actionRoomById';
 
 class CheckIn extends React.Component {
   constructor(props) {
@@ -65,6 +66,14 @@ class CheckIn extends React.Component {
     }
     this.setState({});
   };
+
+  handleToCheckOut = async roomId => {
+    const token = await getUserToken();
+    await this.props.dispatchRoomById(token, roomId);
+    this.props.navigation.navigate('CheckOut', {
+      roomId,
+    });
+  };
   render() {
     return (
       <View>
@@ -95,7 +104,11 @@ class CheckIn extends React.Component {
               return (
                 <TouchableOpacity
                   key={item._id}
-                  onPress={() => this.onClickRoom(item.room_name, item._id)}>
+                  onPress={() =>
+                    item.is_booked
+                      ? this.handleToCheckOut(item._id)
+                      : this.onClickRoom(item.room_name, item._id)
+                  }>
                   <View
                     style={{
                       borderWidth: 4,
@@ -135,6 +148,8 @@ const mapDispatchToProps = dispatch => {
   return {
     dipatchCustomer: token => dispatch(actionGetAllCustomer(token)),
     dispatchRoom: token => dispatch(actionGetAllRoom(token)),
+    dispatchRoomById: (token, roomId) =>
+      dispatch(actionGetRoomById(token, roomId)),
   };
 };
 export default connect(

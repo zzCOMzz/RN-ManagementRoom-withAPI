@@ -114,7 +114,11 @@ class ModalAddNewOrder extends React.Component {
               <TouchableOpacity onPress={() => this.props.onCancel()}>
                 <Text style={{fontSize: 22}}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.props.onSubmit()}>
+              <TouchableOpacity
+                onPress={async () => {
+                  await this.props.onSubmit();
+                  this.setState({duration: 0, selected: undefined});
+                }}>
                 <Text style={{fontSize: 22}}>Save</Text>
               </TouchableOpacity>
             </View>

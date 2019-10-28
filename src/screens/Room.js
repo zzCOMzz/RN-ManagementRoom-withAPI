@@ -66,9 +66,9 @@ class Room extends React.Component {
     this.setState({isModalVisble: false, inputRoomName: ''});
   };
 
-  handleDeleteRoom = async roomId => {
+  handleDeleteRoom = async (roomId, orderId) => {
     const token = await getUserToken();
-    const res = await deleteRoom(roomId);
+    const res = await deleteRoom(roomId, orderId);
     ToastAndroid.showWithGravity(
       `${res.data.message}`,
       ToastAndroid.LONG,
@@ -111,7 +111,9 @@ class Room extends React.Component {
                     onPress={() =>
                       this.handleUpdateRoom(item._id, item.room_name)
                     }
-                    onLongPress={() => this.handleDeleteRoom(item._id)}>
+                    onLongPress={() =>
+                      this.handleDeleteRoom(item._id, item.order_id)
+                    }>
                     <View
                       style={{
                         borderWidth: 4,
