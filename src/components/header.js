@@ -16,7 +16,7 @@ class Header extends Component {
           },
           this.props.stylesHeader,
         ]}>
-        <Text style={{fontSize: 30, color: 'white'}}>
+        <Text style={{fontSize: 30, color: 'white', marginTop: 3}}>
           {this.props.titleText}
         </Text>
       </View>

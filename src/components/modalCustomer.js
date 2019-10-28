@@ -34,7 +34,7 @@ class ModalAddCustomer extends React.Component {
           <View style={{flex: 1}}>
             <Text
               style={{fontSize: 30, alignSelf: 'center', fontWeight: 'bold'}}>
-              Add Customer
+              {this.props.title}
             </Text>
             <Form
               style={{

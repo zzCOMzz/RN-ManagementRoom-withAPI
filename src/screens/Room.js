@@ -1,14 +1,22 @@
 import React from 'react';
-import {View, Text, Alert, TouchableOpacity, ToastAndroid} from 'react-native';
+import {
+  View,
+  Text,
+  Alert,
+  TouchableOpacity,
+  ToastAndroid,
+  ScrollView,
+} from 'react-native';
 import {Icon} from 'native-base';
 import Header from '../components/header';
 import {ThemeColor} from '../Assets/constantColor';
 import ModalAddNewRoom from '../components/modalRoom';
-import {AddNewRoom, getUserToken, UpdateRoom} from '../functions';
+import {AddNewRoom, getUserToken, updateRoom, deleteRoom} from '../functions';
 
 import {connect} from 'react-redux';
 import {actionGetAllRoom} from '../redux/actions/actionRoom';
 
+console.disableYellowBox = true;
 class Room extends React.Component {
   constructor(props) {
     super(props);
@@ -32,7 +40,6 @@ class Room extends React.Component {
 
   handleAddNewRoom = async () => {
     const response = await AddNewRoom(this.state.inputRoomName);
-    this.setState({isModalAdd: false});
     ToastAndroid.showWithGravity(
       `${response.data.message}`,
       ToastAndroid.LONG,
@@ -40,6 +47,7 @@ class Room extends React.Component {
     );
     const token = await getUserToken();
     await this.props.actionGetAllRoom(token);
+    this.setState({isModalAdd: false, inputRoomName: ''});
   };
 
   handleUpdateRoom = async (Id, roomName) => {
@@ -48,14 +56,25 @@ class Room extends React.Component {
 
   handleUpdateNewRoom = async () => {
     const token = await getUserToken();
-    const res = await UpdateRoom(this.state.inputRoomName, this.state.roomId);
+    const res = await updateRoom(this.state.inputRoomName, this.state.roomId);
     ToastAndroid.showWithGravity(
       `${res.data.message}`,
       ToastAndroid.LONG,
       ToastAndroid.CENTER,
     );
     await this.props.actionGetAllRoom(token);
-    this.setState({isModalVisble: false});
+    this.setState({isModalVisble: false, inputRoomName: ''});
+  };
+
+  handleDeleteRoom = async roomId => {
+    const token = await getUserToken();
+    const res = await deleteRoom(roomId);
+    ToastAndroid.showWithGravity(
+      `${res.data.message}`,
+      ToastAndroid.LONG,
+      ToastAndroid.CENTER,
+    );
+    await this.props.actionGetAllRoom(token);
   };
   render() {
     return (
@@ -80,40 +99,51 @@ class Room extends React.Component {
           titleText="Room"
           stylesHeader={{backgroundColor: ThemeColor, height: 50}}
         />
-        <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
-          {this.props.allRoom.data <= 0 ? (
-            <View />
-          ) : (
-            this.props.allRoom.data.data.map(item => {
-              return (
-                <TouchableOpacity
-                  key={item._id}
-                  onPress={() =>
-                    this.handleUpdateRoom(item._id, item.room_name)
-                  }>
-                  <View
-                    style={{
-                      borderWidth: 4,
-                      height: 80,
-                      width: 80,
-                      margin: 10,
-                      paddingTop: 15,
-                    }}>
-                    <Text style={{alignSelf: 'center', fontSize: 30}}>
-                      {item.room_name}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            })
-          )}
-          <TouchableOpacity onPress={() => this.setState({isModalAdd: true})}>
-            <View style={{borderWidth: 4, height: 80, width: 80, margin: 10}}>
-              <Icon name="add" style={{fontSize: 50, alignSelf: 'center'}} />
-              <Text style={{alignSelf: 'center'}}>ADD</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+        <ScrollView>
+          <View style={{flexWrap: 'wrap-reverse', flexDirection: 'row'}}>
+            {this.props.allRoom.data <= 0 ? (
+              <View />
+            ) : (
+              this.props.allRoom.data.data.map(item => {
+                return (
+                  <TouchableOpacity
+                    key={item._id}
+                    onPress={() =>
+                      this.handleUpdateRoom(item._id, item.room_name)
+                    }
+                    onLongPress={() => this.handleDeleteRoom(item._id)}>
+                    <View
+                      style={{
+                        borderWidth: 4,
+                        height: 80,
+                        width: 80,
+                        margin: 10,
+                        paddingTop: 15,
+                      }}>
+                      <Text style={{alignSelf: 'center', fontSize: 30}}>
+                        {item.room_name}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })
+            )}
+          </View>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+              marginBottom: 50,
+            }}>
+            <TouchableOpacity onPress={() => this.setState({isModalAdd: true})}>
+              <View style={{borderWidth: 4, height: 80, width: 80, margin: 10}}>
+                <Icon name="add" style={{fontSize: 50, alignSelf: 'center'}} />
+                <Text style={{alignSelf: 'center'}}>ADD </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </View>
     );
   }

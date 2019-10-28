@@ -6,6 +6,10 @@ const RoomSchema = new Schema({
     type: String,
     required: true,
   },
+  is_booked: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model('Room', RoomSchema);

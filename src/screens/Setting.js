@@ -1,7 +1,8 @@
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
+import Header from '../components/header';
+import {ThemeColor} from '../Assets/constantColor';
 import AsyncStorage from '@react-native-community/async-storage';
-
 class Setting extends React.Component {
   constructor(props) {
     super(props);
@@ -9,7 +10,10 @@ class Setting extends React.Component {
   render() {
     return (
       <View>
-        <Text>Setting</Text>
+        <Header
+          titleText="Setting"
+          stylesHeader={{backgroundColor: ThemeColor, height: 50}}
+        />
         <TouchableOpacity
           onPress={() => {
             AsyncStorage.clear();

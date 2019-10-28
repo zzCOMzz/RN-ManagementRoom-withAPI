@@ -1,11 +1,23 @@
 import React from 'react';
-import {View, Text, ToastAndroid, Image, TouchableOpacity} from 'react-native';
-import {Fab, Icon, Button} from 'native-base';
+import {
+  View,
+  Text,
+  Alert,
+  ToastAndroid,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import {Fab, Icon} from 'native-base';
 import Header from '../components/header';
 import {ModalAddCustomer} from '../components/modalCustomer';
 import {ThemeColor} from '../Assets/constantColor';
 
-import {addCustomer, getUserToken, updateCustomer} from '../functions';
+import {
+  addCustomer,
+  getUserToken,
+  updateCustomer,
+  deletCustomer,
+} from '../functions';
 import {connect} from 'react-redux';
 import {actionGetAllCustomer} from '../redux/actions/actionCustomer';
 class Customer extends React.Component {
@@ -55,7 +67,7 @@ class Customer extends React.Component {
 
   handleGetData = ({name, _id, identity_number, phone_number}) => {
     this.setState({
-      isModalVisible: true,
+      isModalAddVisible: true,
       name,
       identity: identity_number,
       phoneNumber: phone_number.toString(),
@@ -81,16 +93,42 @@ class Customer extends React.Component {
     );
     await this.props.actionGetAllCustomer(token);
     this.setState({
-      isModalVisible: false,
+      isModalAddVisible: false,
       name: '',
       identity: '',
       phoneNumber: '',
     });
   };
+
+  handleDeleteCus = async (cusId, cusName) => {
+    const token = await getUserToken();
+    Alert.alert(
+      `Delete Customer ${cusName}`,
+      'Are You Sure Want to Delete this Customer',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => {
+            alert('deleted was canceled');
+          },
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: async () => {
+            await deletCustomer(cusId);
+            alert('Customer  was deleted');
+            await this.props.actionGetAllCustomer(token);
+          },
+        },
+      ],
+    );
+  };
   render() {
     return (
       <View style={{flex: 1}}>
         <ModalAddCustomer
+          title="Update Customer"
           name={this.state.name}
           changeName={text => this.setState({name: text})}
           identity={this.state.identity}
@@ -102,6 +140,7 @@ class Customer extends React.Component {
           onSubmit={() => this.handleUpdateCustomer()}
         />
         <ModalAddCustomer
+          title="Add Customer"
           name={this.state.name}
           changeName={text => this.setState({name: text})}
           identity={this.state.identity}
@@ -123,7 +162,8 @@ class Customer extends React.Component {
             return (
               <TouchableOpacity
                 key={item._id}
-                onPress={() => this.handleGetData(item)}>
+                onPress={() => this.handleGetData(item)}
+                onLongPress={() => this.handleDeleteCus(item._id, item.name)}>
                 <View
                   style={{
                     borderWidth: 4,
@@ -156,6 +196,7 @@ class Customer extends React.Component {
             );
           })
         )}
+
         <Fab position="bottomRight" active onPress={() => this.showModal()}>
           <Icon name="add" />
         </Fab>

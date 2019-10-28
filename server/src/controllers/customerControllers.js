@@ -51,4 +51,17 @@ module.exports = {
       console.log(error);
     }
   },
+  deleteCus: async (req, res, next) => {
+    const cusId = req.params.cusid;
+    try {
+      const delCus = await Customer.findByIdAndDelete({_id: cusId});
+      res.json({
+        statusCode: 200,
+        message: `Customer ${delCus.name} was Deleted`,
+        success: true,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };

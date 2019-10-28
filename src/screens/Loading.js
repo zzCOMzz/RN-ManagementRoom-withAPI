@@ -2,6 +2,7 @@ import React from 'react';
 import {Spinner} from 'native-base';
 import {View, Text} from 'react-native';
 import {actionGetAllRoom} from '../redux/actions/actionRoom';
+import {actionGetAllCustomer} from '../redux/actions/actionCustomer';
 import {connect} from 'react-redux';
 import {getUserToken} from '../functions';
 
@@ -12,6 +13,7 @@ class LoadingScreen extends React.Component {
   async componentDidMount() {
     const token = await getUserToken();
     await actionGetAllRoom(token);
+    await actionGetAllCustomer(token);
 
     token != null
       ? this.props.navigation.navigate('App')
@@ -19,7 +21,7 @@ class LoadingScreen extends React.Component {
   }
   render() {
     return (
-      <View style={{alignItems: 'center', marginTop: '50%'}}>
+      <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
         <Spinner size="large" color="blue" />
       </View>
     );
