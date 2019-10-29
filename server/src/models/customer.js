@@ -14,6 +14,10 @@ const CustomerSchema = new Schema({
     type: String,
     required: true,
   },
+  is_order_in_room: {
+    type: Schema.Types.ObjectId,
+    ref: 'Room',
+  },
 });
 
 module.exports = mongoose.model('Customer', CustomerSchema);

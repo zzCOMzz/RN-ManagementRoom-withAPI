@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+
 import {Icon} from 'native-base';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';

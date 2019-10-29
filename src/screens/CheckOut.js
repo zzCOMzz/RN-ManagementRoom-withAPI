@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, Text, ToastAndroid, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  StatusBar,
+} from 'react-native';
 import Header from '../components/header';
 import {Form, Item, Input, Label} from 'native-base';
 
@@ -26,6 +32,29 @@ class CheckOut extends React.Component {
     this.props.actionGetRoomById(token, this.state.roomId);
   }
 
+  // startTimer = () => {
+  //   this.clockCall = setInterval(() => {
+  //     this.decrementClock();
+  //   }, 1000 * 60);
+  // };
+
+  // decrementClock = () => {
+  //   if (this.state.duration === 0) {
+  //     clearInterval(this.clockCall);
+  //   }
+  //   this.setState(
+  //     prevState => ({duration: prevState.duration - 1}),
+  //     () => {
+  //       if (this.state.duration === 0) {
+  //         clearInterval(this.clockCall);
+  //       }
+  //     },
+  //   );
+  // };
+  // componentWillUnmount() {
+  //   clearInterval(this.clockCall);
+  // }
+
   handleCheckOut = async () => {
     const token = await getUserToken();
     const res = await checkoutOrder(
@@ -38,12 +67,16 @@ class CheckOut extends React.Component {
       ToastAndroid.CENTER,
     );
     await this.props.actionGetRoom(token);
+    await this.props.actionGetCustomer(token);
     this.props.navigation.navigate('CheckIn');
   };
 
   render() {
+    console.log('DURATION', this.state.duration);
+
     return (
       <View>
+        <StatusBar hidden />
         <Header
           titleText="Check Out"
           stylesHeader={{backgroundColor: '#4cd137', height: 50}}
@@ -61,11 +94,11 @@ class CheckOut extends React.Component {
             </Label>
             <Input value={this.state.customerName} disabled />
           </Item>
-          <Item stackedLabel>
+          <Item style={{marginTop: 20}}>
             <Label>
-              <Text>Duration Left (minutes)</Text>
+              <Text>Duration Left (minutes) : </Text>{' '}
+              <Text>{this.state.duration}</Text>
             </Label>
-            <Input value={this.state.duration} disabled />
           </Item>
         </Form>
         <View

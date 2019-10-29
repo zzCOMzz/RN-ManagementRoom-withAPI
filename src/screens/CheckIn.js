@@ -1,6 +1,11 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, ToastAndroid} from 'react-native';
-
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ToastAndroid,
+  StatusBar,
+} from 'react-native';
 import Header from '../components/header';
 import {ThemeColor} from '../Assets/constantColor';
 
@@ -67,16 +72,22 @@ class CheckIn extends React.Component {
     this.setState({});
   };
 
-  handleToCheckOut = async roomId => {
+  handleToCheckOut = async (roomId, duration) => {
     const token = await getUserToken();
     await this.props.dispatchRoomById(token, roomId);
     this.props.navigation.navigate('CheckOut', {
       roomId,
+      duration,
     });
   };
   render() {
     return (
       <View>
+        <StatusBar
+          backgroundColor={ThemeColor}
+          animated
+          barStyle="light-content"
+        />
         <Header
           titleText="Check In"
           stylesHeader={{backgroundColor: ThemeColor, height: 50}}
@@ -106,16 +117,17 @@ class CheckIn extends React.Component {
                   key={item._id}
                   onPress={() =>
                     item.is_booked
-                      ? this.handleToCheckOut(item._id)
+                      ? this.handleToCheckOut(item._id, item.order_id.duration)
                       : this.onClickRoom(item.room_name, item._id)
                   }>
                   <View
                     style={{
                       borderWidth: 4,
+                      borderRadius: 8.5,
                       height: 110,
                       width: 115,
                       margin: 10,
-                      paddingTop: 30,
+                      paddingTop: 20,
                       backgroundColor: item.is_booked ? '#4cd137' : 'gray',
                     }}>
                     <Text
@@ -125,6 +137,15 @@ class CheckIn extends React.Component {
                         color: item.is_booked ? '#dcdde1' : 'white',
                       }}>
                       {item.room_name}
+                    </Text>
+
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: item.is_booked ? 'white' : 'yellow',
+                        alignSelf: 'center',
+                      }}>
+                      {item.is_booked ? item.customer_id.name : 'Available'}
                     </Text>
                   </View>
                 </TouchableOpacity>

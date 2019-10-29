@@ -1,12 +1,12 @@
 import React from 'react';
 import {
   Text,
-  TouchableHighlight,
+  Dimensions,
   View,
   KeyboardAvoidingView,
   TouchableOpacity,
 } from 'react-native';
-import {Input, Item, Label, Icon, Form, Picker} from 'native-base';
+import {Input, Item, Label, Icon, Form, Picker, Button} from 'native-base';
 
 import Modal from 'react-native-modal';
 
@@ -34,16 +34,18 @@ class ModalAddNewOrder extends React.Component {
       <KeyboardAvoidingView>
         <Modal
           animationIn="slideInUp"
-          animationInTiming={1500}
+          animationInTiming={1600}
           animationOut="zoomOutDown"
-          animationOutTiming={1000}
-          isVisible={this.props.modalVisible}
-          style={{
-            marginHorizontal: 40,
-            marginVertical: 20,
-            backgroundColor: 'rgba(255,255,255,0.9)',
-          }}>
-          <View style={{flex: 1}}>
+          animationOutTiming={1800}
+          isVisible={this.props.modalVisible}>
+          <View
+            style={{
+              alignSelf: 'center',
+              backgroundColor: 'white',
+              height: Dimensions.get('window').height * 0.65,
+              width: Dimensions.get('window').width * 0.8,
+              borderRadius: 9,
+            }}>
             <Text
               style={{fontSize: 30, alignSelf: 'center', fontWeight: 'bold'}}>
               {this.props.title}
@@ -111,16 +113,31 @@ class ModalAddNewOrder extends React.Component {
                 justifyContent: 'space-around',
                 marginTop: 60,
               }}>
-              <TouchableOpacity onPress={() => this.props.onCancel()}>
-                <Text style={{fontSize: 22}}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+              <Button
+                onPress={() => this.props.onCancel()}
+                style={{
+                  width: 120,
+                  height: 40,
+                  backgroundColor: '#ffffff',
+                  justifyContent: 'center',
+                  borderRadius: 8.5,
+                }}>
+                <Text style={{fontSize: 22, color: '#ff4757'}}>Cancel</Text>
+              </Button>
+              <Button
                 onPress={async () => {
                   await this.props.onSubmit();
                   this.setState({duration: 0, selected: undefined});
+                }}
+                style={{
+                  width: 120,
+                  height: 40,
+                  backgroundColor: '#1B9CFC',
+                  justifyContent: 'center',
+                  borderRadius: 8.5,
                 }}>
-                <Text style={{fontSize: 22}}>Save</Text>
-              </TouchableOpacity>
+                <Text style={{fontSize: 22, color: 'white'}}>Save</Text>
+              </Button>
             </View>
           </View>
         </Modal>

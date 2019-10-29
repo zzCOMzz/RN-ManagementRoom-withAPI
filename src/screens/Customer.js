@@ -6,12 +6,14 @@ import {
   ToastAndroid,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
-import {Fab, Icon} from 'native-base';
+import {Fab, Icon, Right} from 'native-base';
 import Header from '../components/header';
 import {ModalAddCustomer} from '../components/modalCustomer';
 import {ThemeColor} from '../Assets/constantColor';
-
+import Swipeable from 'react-native-swipeable';
+import IconFA from 'react-native-vector-icons/FontAwesome';
 import {
   addCustomer,
   getUserToken,
@@ -57,11 +59,11 @@ class Customer extends React.Component {
     );
     await this.props.actionGetAllCustomer(token);
     this.setState({
-      isModalVisible: false,
       name: '',
       identity: '',
       phoneNumber: '',
       customerId: '',
+      isModalVisible: false,
     });
   };
 
@@ -124,6 +126,22 @@ class Customer extends React.Component {
       ],
     );
   };
+
+  handleErr = () => {
+    ToastAndroid.showWithGravity(
+      'This User Still Using Our Room',
+      ToastAndroid.LONG,
+      ToastAndroid.CENTER,
+    );
+  };
+
+  handleDeletCustomer = item => {
+    item.is_order_in_room == undefined
+      ? this.handleDeleteCus(item._id, item.name)
+      : item.is_order_in_room.is_booked
+      ? this.handleErr()
+      : this.handleDeleteCus(item._id, item.name);
+  };
   render() {
     return (
       <View style={{flex: 1}}>
@@ -155,47 +173,68 @@ class Customer extends React.Component {
           titleText="Customer"
           stylesHeader={{backgroundColor: ThemeColor, height: 50}}
         />
-        {this.props.allMyCustomer.data <= 0 ? (
-          <View />
-        ) : (
-          this.props.allMyCustomer.data.data.map(item => {
-            return (
-              <TouchableOpacity
-                key={item._id}
-                onPress={() => this.handleGetData(item)}
-                onLongPress={() => this.handleDeleteCus(item._id, item.name)}>
-                <View
-                  style={{
-                    borderWidth: 4,
-                    flexDirection: 'row',
-                    padding: 10,
-                    margin: 10,
-                  }}>
-                  <Image
-                    source={{
-                      uri:
-                        'https://png.pngtree.com/svg/20170527/unknown_elephant_5068.png',
-                    }}
-                    style={{width: 50, height: 50}}
-                  />
-                  <View style={{marginLeft: 10}}>
-                    <View>
-                      <Text>Name : {item.name}</Text>
+        <ScrollView style={{marginVertical: 5}}>
+          {this.props.allMyCustomer.data <= 0 ? (
+            <View />
+          ) : (
+            this.props.allMyCustomer.data.data.map(item => {
+              return (
+                <Swipeable
+                  key={item._id}
+                  rightButtons={[
+                    <EditComponent
+                      handleEditItem={() => this.handleGetData(item)}
+                    />,
+                    <DeleteComponent
+                      handleDeleteItem={() => this.handleDeletCustomer(item)}
+                    />,
+                  ]}>
+                  <View
+                    style={{
+                      borderWidth: 2,
+
+                      borderColor: 'dimgrey',
+                      flexDirection: 'row',
+                      padding: 10,
+                    }}>
+                    <Image
+                      source={{
+                        uri:
+                          'https://png.pngtree.com/svg/20170527/unknown_elephant_5068.png',
+                      }}
+                      style={{width: 60, height: 60, margin: 10}}
+                    />
+                    <View style={{marginLeft: 10}}>
+                      <View>
+                        <Text>Name : {item.name}</Text>
+                        <Text>Identity Number : {item.identity_number}</Text>
+                        <Text>
+                          Phone Number : +{item.phone_number.toString()}
+                        </Text>
+                      </View>
+                      {item.is_order_in_room != undefined ? (
+                        item.is_order_in_room.is_booked ? (
+                          <View>
+                            <Text>
+                              Order at Room {item.is_order_in_room.room_name}
+                            </Text>
+                          </View>
+                        ) : (
+                          <View />
+                        )
+                      ) : (
+                        <View />
+                      )}
                     </View>
-                    <View>
-                      <Text>Identity Number : {item.identity_number}</Text>
-                    </View>
-                    <View>
-                      <Text>
-                        Phone Number : +{item.phone_number.toString()}
-                      </Text>
-                    </View>
+                    <Right>
+                      <IconFA name="arrow-left" size={22} />
+                    </Right>
                   </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })
-        )}
+                </Swipeable>
+              );
+            })
+          )}
+        </ScrollView>
 
         <Fab position="bottomRight" active onPress={() => this.showModal()}>
           <Icon name="add" />
@@ -215,3 +254,32 @@ export default connect(
   mapStateToProps,
   {actionGetAllCustomer},
 )(Customer);
+
+const EditComponent = props => {
+  return (
+    <TouchableOpacity
+      onPress={() => props.handleEditItem()}
+      style={{
+        paddingHorizontal: 20,
+        paddingVertical: 30,
+        backgroundColor: '#3ae374',
+        height: '100%',
+      }}>
+      <IconFA name="edit" size={35} color="#ecf0f1" />
+    </TouchableOpacity>
+  );
+};
+
+const DeleteComponent = props => {
+  return (
+    <TouchableOpacity
+      onPress={() => props.handleDeleteItem()}
+      style={{
+        backgroundColor: '#ff3838',
+        padding: 30,
+        height: '100%',
+      }}>
+      <IconFA name="trash" color="#ecf0f1" size={35} />
+    </TouchableOpacity>
+  );
+};

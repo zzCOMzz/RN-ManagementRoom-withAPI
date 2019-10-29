@@ -31,12 +31,23 @@ export const updateRoom = async (roomName, roomId) => {
   return response;
 };
 
-export const deleteRoom = async (roomId, orderId) => {
+export const deleteRoomWithOrder = async (roomId, orderId) => {
   const token = await getUserToken();
 
   const response = await axios.delete(`${Host}/room/${roomId}/${orderId}`, {
     headers: {Authorization: `${token}`},
   });
+
+  return response;
+};
+
+export const deleteRoom = async roomId => {
+  const token = await getUserToken();
+
+  const response = await axios.delete(`${Host}/room/${roomId}`, {
+    headers: {Authorization: `${token}`},
+  });
+
   return response;
 };
 

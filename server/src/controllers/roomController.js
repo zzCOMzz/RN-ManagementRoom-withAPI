@@ -38,11 +38,24 @@ module.exports = {
       console.log(error);
     }
   },
-  deleteRoom: async (req, res, next) => {
+  deleteRoomWithOrder: async (req, res, next) => {
     const roomId = req.params.roomid;
     const orderId = req.params.orderId;
     try {
       await OrderModel.findByIdAndDelete({_id: orderId});
+      const roomDel = await Room.findByIdAndDelete({_id: roomId});
+      res.json({
+        statusCode: 200,
+        message: `Room ${roomDel.room_name} was Deleted`,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  deleteRoom: async (req, res, next) => {
+    const roomId = req.params.roomid;
+
+    try {
       const roomDel = await Room.findByIdAndDelete({_id: roomId});
       res.json({
         statusCode: 200,

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Dimensions} from 'react-native';
 import {Input, Item, Label} from 'native-base';
 import Modal from 'react-native-modal';
 
@@ -13,13 +13,16 @@ class RoomModal extends React.Component {
         isVisible={this.props.isVisible}
         animationInTiming={1000}
         animationOutTiming={1200}
-        animationIn="slideInDown"
-        style={{
-          marginHorizontal: 40,
-          marginVertical: 20,
-          backgroundColor: 'rgba(255,255,255,0.9)',
-        }}>
-        <View style={{flex: 1}}>
+        animationIn="slideInDown">
+        <View
+          style={{
+            alignSelf: 'center',
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height * 0.4,
+            width: Dimensions.get('window').width * 0.7,
+            borderRadius: 9,
+            padding: 10,
+          }}>
           <Text style={{alignSelf: 'center', fontSize: 30, fontWeight: 'bold'}}>
             {this.props.title}
           </Text>

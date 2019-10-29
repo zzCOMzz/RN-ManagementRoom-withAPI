@@ -20,7 +20,7 @@ module.exports = {
   },
   getAllCus: async (req, res, next) => {
     try {
-      const allCus = await Customer.find({});
+      const allCus = await Customer.find({}).populate('is_order_in_room');
       res.json({data: allCus});
     } catch (error) {
       console.log(error);
