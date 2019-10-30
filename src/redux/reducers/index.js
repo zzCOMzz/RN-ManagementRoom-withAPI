@@ -5,7 +5,7 @@ import RootNavigator from '../../navigator/rootNavigator';
 import {reducerGetAllRoom} from './reducerRoom';
 import {reducerGetAllCustomer} from './reducerCustomer';
 import {reducerGetRoomById} from './reducerRoomById';
-
+import {reducerGetAllOrder} from './reducerOrder';
 const reducerRouter = createNavigationReducer(RootNavigator);
 
 const appReducer = combineReducers({
@@ -13,6 +13,7 @@ const appReducer = combineReducers({
   getAllRoom: reducerGetAllRoom,
   getAllCustomer: reducerGetAllCustomer,
   getRoomById: reducerGetRoomById,
+  getAllOrder: reducerGetAllOrder,
 });
 
 export default appReducer;

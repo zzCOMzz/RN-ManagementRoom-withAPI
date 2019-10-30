@@ -154,7 +154,15 @@ class Customer extends React.Component {
           phone={this.state.phoneNumber}
           changePhone={text => this.setState({phoneNumber: text})}
           modalVisible={this.state.isModalAddVisible}
-          onCancel={() => this.setState({isModalAddVisible: false})}
+          onCancel={() =>
+            this.setState({
+              isModalAddVisible: false,
+              name: '',
+              identity: '',
+              phoneNumber: '',
+              customerId: '',
+            })
+          }
           onSubmit={() => this.handleUpdateCustomer()}
         />
         <ModalAddCustomer
@@ -166,7 +174,15 @@ class Customer extends React.Component {
           phone={this.state.phoneNumber}
           changePhone={text => this.setState({phoneNumber: text})}
           modalVisible={this.state.isModalVisible}
-          onCancel={() => this.setState({isModalVisible: false})}
+          onCancel={() =>
+            this.setState({
+              isModalVisible: false,
+              name: '',
+              identity: '',
+              phoneNumber: '',
+              customerId: '',
+            })
+          }
           onSubmit={() => this.handleAddCustomer()}
         />
         <Header

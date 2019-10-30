@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ToastAndroid,
   StatusBar,
+  Keyboard,
 } from 'react-native';
 import Header from '../components/header';
 import {ThemeColor} from '../Assets/constantColor';
@@ -41,6 +42,7 @@ class CheckIn extends React.Component {
   };
 
   handleAddCheckIn = async () => {
+    Keyboard.dismiss();
     const token = await getUserToken();
     if (this.state.duration !== 0 && this.state.selectedCustomerId !== '') {
       const res = await addNewOrder({
@@ -128,13 +130,13 @@ class CheckIn extends React.Component {
                       width: 115,
                       margin: 10,
                       paddingTop: 20,
-                      backgroundColor: item.is_booked ? '#4cd137' : 'gray',
+                      backgroundColor: item.is_booked ? 'gray' : '#4cd137',
                     }}>
                     <Text
                       style={{
                         alignSelf: 'center',
                         fontSize: 30,
-                        color: item.is_booked ? '#dcdde1' : 'white',
+                        color: item.is_booked ? 'white' : '#dcdde1',
                       }}>
                       {item.room_name}
                     </Text>

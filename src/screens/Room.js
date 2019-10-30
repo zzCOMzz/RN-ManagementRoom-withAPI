@@ -198,6 +198,7 @@ const Styles = StyleSheet.create({
   textRoomName: {alignSelf: 'center', fontSize: 30},
   containerRoom: {
     borderWidth: 4,
+    borderRadius: 12,
     height: 80,
     width: 80,
     margin: 10,

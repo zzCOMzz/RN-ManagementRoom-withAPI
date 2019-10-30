@@ -5,9 +5,22 @@ import IconFA from 'react-native-vector-icons/FontAwesome';
 import Header from '../components/header';
 import {ThemeColor} from '../Assets/constantColor';
 import AsyncStorage from '@react-native-community/async-storage';
+
+import {connect} from 'react-redux';
+import {actionGetAllOrder} from '../redux/actions/actionOrder';
+
 class Setting extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      username: '',
+    };
+  }
+  async componentDidMount() {
+    const token = await AsyncStorage.getItem('token');
+    await this.props.getAllOrder(token);
+    const username = await AsyncStorage.getItem('admin');
+    this.setState({username});
   }
   render() {
     return (
@@ -27,32 +40,32 @@ class Setting extends React.Component {
               />
               <Body>
                 <Text>Admin</Text>
-                <Text note>Admin Name</Text>
+                <Text note>{this.state.username}</Text>
               </Body>
             </Left>
           </CardItem>
         </Card>
         <Card>
-          <CardItem>
-            <IconFA name="history" size={25} />
-            <Text style={{fontSize: 20, marginLeft: 18}}>History Order</Text>
-            <Left />
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('History')}>
+            <CardItem>
+              <IconFA name="history" size={25} />
+              <Text style={{fontSize: 20, marginLeft: 18}}>History Order</Text>
+              <Left />
 
-            <Right>
-              <Icon style={{fontSize: 28}} name="ios-arrow-forward" />
-            </Right>
-          </CardItem>
+              <Right>
+                <Icon style={{fontSize: 28}} name="ios-arrow-forward" />
+              </Right>
+            </CardItem>
+          </TouchableOpacity>
         </Card>
 
-        <TouchableOpacity
-          style={{
-            flex: 1,
-          }}
-          onPress={() => {
-            AsyncStorage.clear();
-            this.props.navigation.navigate('Loading');
-          }}>
-          <Card>
+        <Card>
+          <TouchableOpacity
+            onPress={() => {
+              AsyncStorage.clear();
+              this.props.navigation.navigate('Loading');
+            }}>
             <CardItem>
               <Text style={{fontSize: 20}}>LOGOUT</Text>
               <Right />
@@ -60,11 +73,25 @@ class Setting extends React.Component {
                 <Icon style={{fontSize: 28}} name="ios-log-out" />
               </Right>
             </CardItem>
-          </Card>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </Card>
       </View>
     );
   }
 }
 
-export default Setting;
+const mapStateToProps = state => {
+  return {
+    allOrder: state.getAllOrder,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getAllOrder: token => dispatch(actionGetAllOrder(token)),
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Setting);

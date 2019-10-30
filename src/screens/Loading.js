@@ -3,6 +3,7 @@ import {Spinner} from 'native-base';
 import {View, Text} from 'react-native';
 import {actionGetAllRoom} from '../redux/actions/actionRoom';
 import {actionGetAllCustomer} from '../redux/actions/actionCustomer';
+import {actionGetAllOrder} from '../redux/actions/actionOrder';
 import {connect} from 'react-redux';
 import {getUserToken} from '../functions';
 
@@ -14,6 +15,7 @@ class LoadingScreen extends React.Component {
     const token = await getUserToken();
     await actionGetAllRoom(token);
     await actionGetAllCustomer(token);
+    await actionGetAllOrder(token);
 
     token != null
       ? this.props.navigation.navigate('App')
@@ -31,7 +33,8 @@ class LoadingScreen extends React.Component {
 const mapStateToProp = state => {
   return {...state};
 };
+
 export default connect(
   mapStateToProp,
-  {actionGetAllRoom},
+  {actionGetAllRoom, actionGetAllCustomer, actionGetAllOrder},
 )(LoadingScreen);
