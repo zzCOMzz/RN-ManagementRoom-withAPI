@@ -69,6 +69,8 @@ class Login extends React.Component {
           if (data.success) {
             AsyncStorage.setItem('token', data.token);
             AsyncStorage.setItem('admin', data.username);
+            AsyncStorage.setItem('admin-id', data.adminId);
+
             this.setState({isLoading: false});
             return this.props.navigation.navigate('Loading');
           } else {

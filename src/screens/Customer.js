@@ -19,6 +19,7 @@ import {
   getUserToken,
   updateCustomer,
   deletCustomer,
+  getAdminId,
 } from '../functions';
 import {connect} from 'react-redux';
 import {actionGetAllCustomer} from '../redux/actions/actionCustomer';
@@ -37,7 +38,8 @@ class Customer extends React.Component {
 
   async componentDidMount() {
     const token = await getUserToken();
-    await this.props.actionGetAllCustomer(token);
+    const id = await getAdminId();
+    await this.props.actionGetAllCustomer(token, id);
     await this.props.allMyCustomer.data;
   }
 
@@ -47,6 +49,7 @@ class Customer extends React.Component {
 
   handleAddCustomer = async () => {
     const token = await getUserToken();
+    const id = await getAdminId();
     const res = await addCustomer({
       customerName: this.state.name,
       customerID: this.state.identity,
@@ -57,7 +60,7 @@ class Customer extends React.Component {
       ToastAndroid.LONG,
       ToastAndroid.CENTER,
     );
-    await this.props.actionGetAllCustomer(token);
+    await this.props.actionGetAllCustomer(token, id);
     this.setState({
       name: '',
       identity: '',
@@ -79,6 +82,7 @@ class Customer extends React.Component {
 
   handleUpdateCustomer = async () => {
     const token = await getUserToken();
+    const id = await getAdminId();
     const res = await updateCustomer(
       {
         customerName: this.state.name,
@@ -93,7 +97,7 @@ class Customer extends React.Component {
       ToastAndroid.LONG,
       ToastAndroid.CENTER,
     );
-    await this.props.actionGetAllCustomer(token);
+    await this.props.actionGetAllCustomer(token, id);
     this.setState({
       isModalAddVisible: false,
       name: '',
@@ -104,6 +108,7 @@ class Customer extends React.Component {
 
   handleDeleteCus = async (cusId, cusName) => {
     const token = await getUserToken();
+    const id = await getAdminId();
     Alert.alert(
       `Delete Customer ${cusName}`,
       'Are You Sure Want to Delete this Customer',
@@ -120,7 +125,7 @@ class Customer extends React.Component {
           onPress: async () => {
             await deletCustomer(cusId);
             alert('Customer  was deleted');
-            await this.props.actionGetAllCustomer(token);
+            await this.props.actionGetAllCustomer(token, id);
           },
         },
       ],

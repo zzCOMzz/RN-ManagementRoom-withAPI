@@ -18,6 +18,10 @@ const CustomerSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Room',
   },
+  admin_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'Admin',
+  },
 });
 
 module.exports = mongoose.model('Customer', CustomerSchema);

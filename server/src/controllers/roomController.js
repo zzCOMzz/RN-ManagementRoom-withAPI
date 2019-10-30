@@ -3,10 +3,12 @@ const OrderModel = require('../models/order');
 
 module.exports = {
   addNewRoom: async (req, res, next) => {
+    const adminId = req.params.id;
     try {
       const roomName = req.body.roomName;
       const newRoom = await new Room({
         room_name: roomName,
+        admin_id: adminId,
       });
 
       await newRoom.save();
@@ -16,8 +18,9 @@ module.exports = {
     }
   },
   getAllRoom: async (req, res, next) => {
+    const adminId = req.params.id;
     try {
-      const allRoom = await Room.find({})
+      const allRoom = await Room.find({admin_id: adminId})
         .populate('order_id')
         .populate('customer_id');
 

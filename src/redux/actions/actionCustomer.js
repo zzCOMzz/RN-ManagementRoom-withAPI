@@ -2,9 +2,9 @@ import * as types from '../types';
 import axios from 'axios';
 import {Host} from '../../functions/Host';
 
-export const actionGetAllCustomer = token => ({
+export const actionGetAllCustomer = (token, id) => ({
   type: `${types.GET_ALL_CUSTOMER}`,
-  payload: axios.get(`${Host}/customer`, {
+  payload: axios.get(`${Host}/${id}/customer`, {
     headers: {authorization: `${token}`},
   }),
 });

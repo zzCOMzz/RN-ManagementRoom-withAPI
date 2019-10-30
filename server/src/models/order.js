@@ -27,6 +27,10 @@ const OrderSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  admin_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'Admin',
+  },
 });
 
 module.exports = mongoose.model('Order', OrderSchema);

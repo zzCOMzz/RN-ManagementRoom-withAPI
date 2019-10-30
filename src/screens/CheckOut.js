@@ -13,7 +13,7 @@ import {actionGetAllRoom} from '../redux/actions/actionRoom';
 import {actionGetAllCustomer} from '../redux/actions/actionCustomer';
 import {actionGetRoomById} from '../redux/actions/actionRoomById';
 import {connect} from 'react-redux';
-import {getUserToken, checkoutOrder} from '../functions';
+import {getUserToken, checkoutOrder, getAdminId} from '../functions';
 
 class CheckOut extends React.Component {
   constructor(props) {
@@ -28,8 +28,9 @@ class CheckOut extends React.Component {
   }
 
   async componentDidMount() {
+    const id = await getAdminId();
     const token = await getUserToken();
-    this.props.actionGetRoomById(token, this.state.roomId);
+    this.props.actionGetRoomById(token, this.state.roomId, id);
   }
 
   // startTimer = () => {
@@ -57,17 +58,19 @@ class CheckOut extends React.Component {
 
   handleCheckOut = async () => {
     const token = await getUserToken();
+    const id = await getAdminId();
     const res = await checkoutOrder(
       {roomId: this.state.roomId},
       this.state.orderId,
+      id,
     );
     ToastAndroid.showWithGravity(
       `${res.data.message}`,
       ToastAndroid.LONG,
       ToastAndroid.CENTER,
     );
-    await this.props.actionGetRoom(token);
-    await this.props.actionGetCustomer(token);
+    await this.props.actionGetRoom(token, id);
+    await this.props.actionGetCustomer(token, id);
     this.props.navigation.navigate('CheckIn');
   };
 
@@ -129,10 +132,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    actionGetRoom: token => dispatch(actionGetAllRoom(token)),
-    actionGetCustomer: token => dispatch(actionGetAllCustomer(token)),
-    actionGetRoomById: (token, roomId) =>
-      dispatch(actionGetRoomById(token, roomId)),
+    actionGetRoom: (token, id) => dispatch(actionGetAllRoom(token, id)),
+    actionGetCustomer: (token, id) => dispatch(actionGetAllCustomer(token, id)),
+    actionGetRoomById: (token, roomId, id) =>
+      dispatch(actionGetRoomById(token, roomId, id)),
   };
 };
 export default connect(

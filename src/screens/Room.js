@@ -19,6 +19,7 @@ import {
   updateRoom,
   deleteRoom,
   deleteRoomWithOrder,
+  getAdminId,
 } from '../functions';
 
 import {connect} from 'react-redux';
@@ -36,13 +37,14 @@ class Room extends React.Component {
     };
   }
   async componentDidMount() {
+    const id = await getAdminId();
     const token = await getUserToken();
     if (!token) {
       Alert.alert('You Are Not Login', 'Please Login First', [
         {text: 'Login', onPress: () => this.props.navigation.navigate('Auth')},
       ]);
     }
-    await this.props.actionGetAllRoom(token);
+    await this.props.actionGetAllRoom(token, id);
     await this.props.allRoom.data;
   }
 
@@ -55,7 +57,8 @@ class Room extends React.Component {
       ToastAndroid.CENTER,
     );
     const token = await getUserToken();
-    await this.props.actionGetAllRoom(token);
+    const id = await getAdminId();
+    await this.props.actionGetAllRoom(token, id);
     this.setState({isModalAdd: false, inputRoomName: ''});
   };
 
@@ -65,18 +68,20 @@ class Room extends React.Component {
 
   handleUpdateNewRoom = async () => {
     const token = await getUserToken();
+    const id = await getAdminId();
     const res = await updateRoom(this.state.inputRoomName, this.state.roomId);
     ToastAndroid.showWithGravity(
       `${res.data.message}`,
       ToastAndroid.LONG,
       ToastAndroid.CENTER,
     );
-    await this.props.actionGetAllRoom(token);
+    await this.props.actionGetAllRoom(token, id);
     this.setState({isModalVisble: false, inputRoomName: ''});
   };
 
   handleDeleteRoom = async (roomId, orderId) => {
     const token = await getUserToken();
+    const id = await getAdminId();
     const res = await deleteRoom(roomId);
 
     ToastAndroid.showWithGravity(
@@ -84,11 +89,12 @@ class Room extends React.Component {
       ToastAndroid.LONG,
       ToastAndroid.CENTER,
     );
-    await this.props.actionGetAllRoom(token);
+    await this.props.actionGetAllRoom(token, id);
   };
 
   handleDeleteRoomWithOrder = async (roomId, orderId) => {
     const token = await getUserToken();
+    const id = await getAdminId();
     const res = await deleteRoomWithOrder(roomId, orderId);
 
     ToastAndroid.showWithGravity(
@@ -96,7 +102,7 @@ class Room extends React.Component {
       ToastAndroid.LONG,
       ToastAndroid.CENTER,
     );
-    await this.props.actionGetAllRoom(token);
+    await this.props.actionGetAllRoom(token, id);
   };
 
   handleErr = () => {

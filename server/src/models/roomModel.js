@@ -18,6 +18,10 @@ const RoomSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Customer',
   },
+  admin_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'Admin',
+  },
 });
 
 module.exports = mongoose.model('Room', RoomSchema);

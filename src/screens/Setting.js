@@ -5,7 +5,7 @@ import IconFA from 'react-native-vector-icons/FontAwesome';
 import Header from '../components/header';
 import {ThemeColor} from '../Assets/constantColor';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import {getUserToken, getAdminId} from '../functions';
 import {connect} from 'react-redux';
 import {actionGetAllOrder} from '../redux/actions/actionOrder';
 
@@ -17,8 +17,9 @@ class Setting extends React.Component {
     };
   }
   async componentDidMount() {
-    const token = await AsyncStorage.getItem('token');
-    await this.props.getAllOrder(token);
+    const token = await getUserToken();
+    const id = await getAdminId();
+    await this.props.getAllOrder(token, id);
     const username = await AsyncStorage.getItem('admin');
     this.setState({username});
   }

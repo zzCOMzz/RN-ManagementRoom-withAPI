@@ -13,7 +13,7 @@ import {ThemeColor} from '../Assets/constantColor';
 import {ModalAddNewOrder} from '../components/modalOrder';
 
 import {connect} from 'react-redux';
-import {getUserToken, addNewOrder} from '../functions';
+import {getUserToken, addNewOrder, getAdminId} from '../functions';
 import {actionGetAllCustomer} from '../redux/actions/actionCustomer';
 import {actionGetAllRoom} from '../redux/actions/actionRoom';
 import {actionGetRoomById} from '../redux/actions/actionRoomById';
@@ -31,8 +31,9 @@ class CheckIn extends React.Component {
   }
   async componentDidMount() {
     const token = await getUserToken();
-    await this.props.dipatchCustomer(token);
-    await this.props.dispatchRoom(token);
+    const id = await getAdminId();
+    await this.props.dipatchCustomer(token, id);
+    await this.props.dispatchRoom(token, id);
     await this.props.allRoom;
     await this.props.allCustomer;
   }
@@ -44,14 +45,15 @@ class CheckIn extends React.Component {
   handleAddCheckIn = async () => {
     Keyboard.dismiss();
     const token = await getUserToken();
+    const id = await getAdminId();
     if (this.state.duration !== 0 && this.state.selectedCustomerId !== '') {
       const res = await addNewOrder({
         roomId: this.state.roomId,
         customerId: this.state.selectedCustomerId,
         duration: this.state.duration,
       });
-      await this.props.dipatchCustomer(token);
-      await this.props.dispatchRoom(token);
+      await this.props.dipatchCustomer(token, id);
+      await this.props.dispatchRoom(token, id);
       ToastAndroid.showWithGravity(
         `${res.data.message}`,
         ToastAndroid.LONG,
@@ -76,7 +78,8 @@ class CheckIn extends React.Component {
 
   handleToCheckOut = async (roomId, duration) => {
     const token = await getUserToken();
-    await this.props.dispatchRoomById(token, roomId);
+    const id = await getAdminId();
+    await this.props.dispatchRoomById(token, roomId, id);
     this.props.navigation.navigate('CheckOut', {
       roomId,
       duration,
@@ -169,10 +172,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    dipatchCustomer: token => dispatch(actionGetAllCustomer(token)),
-    dispatchRoom: token => dispatch(actionGetAllRoom(token)),
-    dispatchRoomById: (token, roomId) =>
-      dispatch(actionGetRoomById(token, roomId)),
+    dipatchCustomer: (token, id) => dispatch(actionGetAllCustomer(token, id)),
+    dispatchRoom: (token, id) => dispatch(actionGetAllRoom(token, id)),
+    dispatchRoomById: (token, roomId, id) =>
+      dispatch(actionGetRoomById(token, roomId, id)),
   };
 };
 export default connect(

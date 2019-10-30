@@ -7,12 +7,14 @@ let localTime = moment.tz('Asia/Jakarta').format();
 
 module.exports = {
   addNewOrder: async (req, res, next) => {
+    const adminId = req.params.id;
     const roomId = req.body.roomId;
     const cusId = req.body.customerId;
     const duration = req.body.duration;
     try {
       console.log(req.body);
       const newOrder = new Order({
+        admin_id: adminId,
         room_id: roomId,
         customer_id: cusId,
         duration,
@@ -43,8 +45,9 @@ module.exports = {
     }
   },
   getAllOrder: async (req, res, next) => {
+    const adminId = req.params.id;
     try {
-      const order = await Order.find({})
+      const order = await Order.find({admin_id: adminId})
         .populate('room_id')
         .populate('customer_id');
       res.json({data: order, message: 'get order success'});

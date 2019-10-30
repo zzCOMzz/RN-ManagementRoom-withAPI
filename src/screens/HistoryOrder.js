@@ -3,7 +3,7 @@ import {View, Text} from 'react-native';
 
 import {connect} from 'react-redux';
 import {actionGetAllOrder} from '../redux/actions/actionOrder';
-import {getUserToken} from '../functions';
+import {getUserToken, getAdminId} from '../functions';
 
 class HistoryOrder extends React.Component {
   constructor(props) {
@@ -12,7 +12,8 @@ class HistoryOrder extends React.Component {
 
   async componentDidMount() {
     const token = await getUserToken();
-    await this.props.getAllOrder(token);
+    const id = await getAdminId();
+    await this.props.getAllOrder(token, id);
     console.log('ORDER ', this.props.allOrder.data);
   }
 

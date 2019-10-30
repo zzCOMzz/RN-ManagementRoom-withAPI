@@ -2,6 +2,7 @@ const Customer = require('../models/customer');
 
 module.exports = {
   addCustomer: async (req, res, next) => {
+    const adminId = req.params.id;
     const customerName = req.body.customerName;
     const customerID = req.body.customerID;
     const customerPhone = req.body.customerPhone;
@@ -10,6 +11,7 @@ module.exports = {
         name: customerName,
         identity_number: customerID,
         phone_number: Number(customerPhone),
+        admin_id: adminId,
       });
 
       await newCus.save();
@@ -19,20 +21,24 @@ module.exports = {
     }
   },
   getAllCus: async (req, res, next) => {
+    const adminId = req.params.id;
     try {
-      const allCus = await Customer.find({}).populate('is_order_in_room');
+      const allCus = await Customer.find({admin_id: adminId}).populate(
+        'is_order_in_room',
+      );
       res.json({data: allCus});
     } catch (error) {
       console.log(error);
     }
   },
   updateCus: async (req, res, next) => {
+    const adminId = req.params.id;
     const cusName = req.body.customerName;
     const cusId = req.body.customerId;
     const cusPhone = req.body.customerPhone;
     const cus_Id = req.params.cusid;
     try {
-      const updateCus = await Customer.findByIdAndUpdate(
+      const updateCus = await Customer.findOneAndUpdate(
         {_id: cus_Id},
         {
           name: cusName,

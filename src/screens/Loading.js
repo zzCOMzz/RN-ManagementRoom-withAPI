@@ -5,7 +5,7 @@ import {actionGetAllRoom} from '../redux/actions/actionRoom';
 import {actionGetAllCustomer} from '../redux/actions/actionCustomer';
 import {actionGetAllOrder} from '../redux/actions/actionOrder';
 import {connect} from 'react-redux';
-import {getUserToken} from '../functions';
+import {getUserToken, getAdminId} from '../functions';
 
 class LoadingScreen extends React.Component {
   constructor(props) {
@@ -13,9 +13,10 @@ class LoadingScreen extends React.Component {
   }
   async componentDidMount() {
     const token = await getUserToken();
-    await actionGetAllRoom(token);
-    await actionGetAllCustomer(token);
-    await actionGetAllOrder(token);
+    const id = await getAdminId();
+    await actionGetAllRoom(token, id);
+    await actionGetAllCustomer(token, id);
+    await actionGetAllOrder(token, id);
 
     token != null
       ? this.props.navigation.navigate('App')
