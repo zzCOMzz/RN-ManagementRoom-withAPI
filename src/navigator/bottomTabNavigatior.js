@@ -60,6 +60,10 @@ const BottomTabStack = createBottomTabNavigator(
     defaultNavigationOptions: ({navigation}) => ({
       tabBarIcon: ({tintColor}) => {},
     }),
+    tabBarOptions: {
+      activeTintColor: 'white',
+      inactiveTintColor: '#a4b0be',
+    },
     tabBarComponent: props => {
       // console.log('PROPS TABbAR', props);
       let changeMode;
