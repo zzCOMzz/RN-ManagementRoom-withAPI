@@ -6,7 +6,16 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
 } from 'react-native';
-import {Input, Item, Label, Icon, Form, Picker, Button} from 'native-base';
+import {
+  Input,
+  Item,
+  Label,
+  Icon,
+  Spinner,
+  Form,
+  Picker,
+  Button,
+} from 'native-base';
 
 import Modal from 'react-native-modal';
 
@@ -75,7 +84,6 @@ class ModalAddNewOrder extends React.Component {
                   selectedValue={this.state.selected}
                   onValueChange={selected => {
                     this.onChangeValue(selected);
-                    console.log('select ', selected);
                   }}>
                   <Picker.Item
                     color="gray"
@@ -124,7 +132,9 @@ class ModalAddNewOrder extends React.Component {
                 }}>
                 <Text style={{fontSize: 22, color: '#ff4757'}}>Cancel</Text>
               </Button>
+
               <Button
+                disabled={this.props.isLoading}
                 onPress={async () => {
                   await this.props.onSubmit();
                   this.setState({duration: 0, selected: undefined});
@@ -132,11 +142,15 @@ class ModalAddNewOrder extends React.Component {
                 style={{
                   width: 120,
                   height: 40,
-                  backgroundColor: '#1B9CFC',
+                  backgroundColor: this.props.isLoading ? '#b2bec3' : '#1B9CFC',
                   justifyContent: 'center',
                   borderRadius: 8.5,
                 }}>
-                <Text style={{fontSize: 22, color: 'white'}}>Save</Text>
+                {this.props.isLoading ? (
+                  <Spinner color="white" />
+                ) : (
+                  <Text style={{fontSize: 22, color: 'white'}}>Save</Text>
+                )}
               </Button>
             </View>
           </View>

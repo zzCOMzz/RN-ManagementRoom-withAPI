@@ -6,6 +6,7 @@ module.exports = {
     const customerName = req.body.customerName;
     const customerID = req.body.customerID;
     const customerPhone = req.body.customerPhone;
+
     try {
       const newCus = await new Customer({
         name: customerName,

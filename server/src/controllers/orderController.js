@@ -3,14 +3,13 @@ const Customer = require('../models/customer');
 const RoomModel = require('../models/roomModel');
 const moment = require('moment-timezone');
 
-let localTime = moment.tz('Asia/Jakarta').format();
-
 module.exports = {
   addNewOrder: async (req, res, next) => {
     const adminId = req.params.id;
     const roomId = req.body.roomId;
     const cusId = req.body.customerId;
     const duration = req.body.duration;
+    const orderEnd = req.body.orderEnd;
     try {
       console.log(req.body);
       const newOrder = new Order({
@@ -19,7 +18,7 @@ module.exports = {
         customer_id: cusId,
         duration,
         is_booked: true,
-        order_end_time: localTime,
+        order_end_time: orderEnd,
       });
 
       const room = await RoomModel.findByIdAndUpdate(
@@ -65,7 +64,6 @@ module.exports = {
         {
           is_done: true,
           is_booked: false,
-          order_end_time: localTime,
         },
       );
       const room = await RoomModel.findByIdAndUpdate(

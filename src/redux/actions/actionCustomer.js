@@ -4,7 +4,7 @@ import {Host} from '../../functions/Host';
 
 export const actionGetAllCustomer = (token, id) => ({
   type: `${types.GET_ALL_CUSTOMER}`,
-  payload: axios.get(`${Host}/${id}/customer`, {
+  payload: axios.get(`${Host}/customer/${id}`, {
     headers: {authorization: `${token}`},
   }),
 });

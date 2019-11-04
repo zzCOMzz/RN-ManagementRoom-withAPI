@@ -7,13 +7,12 @@ import {
   Image,
   StyleSheet,
   Keyboard,
-  AsyncStorage,
   StatusBar,
   ToastAndroid,
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import {
   Input,
   Label,
@@ -64,12 +63,12 @@ class Login extends React.Component {
           username,
           password,
         })
-        .then(res => {
+        .then(async res => {
           const {data} = res;
           if (data.success) {
-            AsyncStorage.setItem('token', data.token);
-            AsyncStorage.setItem('admin', data.username);
-            AsyncStorage.setItem('admin-id', data.adminId);
+            await AsyncStorage.setItem('token', data.token);
+            await AsyncStorage.setItem('admin', data.username);
+            await AsyncStorage.setItem('admin-id', data.adminId);
 
             this.setState({isLoading: false});
             return this.props.navigation.navigate('Loading');
@@ -163,8 +162,14 @@ class Login extends React.Component {
                     <View style={Styles.containerBtn}>
                       <LinearGradient
                         style={[Styles.btnSignin]}
-                        colors={['#4b7bec', '#3b5998', '#192f6a']}>
-                        <TouchableOpacity onPress={() => this.handleSubmit()}>
+                        colors={
+                          this.state.isLoading
+                            ? ['#b2bec3', '#636e72']
+                            : ['#4b7bec', '#3b5998', '#192f6a']
+                        }>
+                        <TouchableOpacity
+                          disabled={this.state.isLoading}
+                          onPress={() => this.handleSubmit()}>
                           {isLoading ? (
                             <Spinner color="white" />
                           ) : (

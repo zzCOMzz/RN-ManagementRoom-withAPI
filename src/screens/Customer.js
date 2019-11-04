@@ -6,6 +6,7 @@ import {
   ToastAndroid,
   Image,
   TouchableOpacity,
+  Vibration,
   ScrollView,
 } from 'react-native';
 import {Fab, Icon, Right} from 'native-base';
@@ -125,6 +126,7 @@ class Customer extends React.Component {
           onPress: async () => {
             await deletCustomer(cusId);
             alert('Customer  was deleted');
+            Vibration.vibrate(2000);
             await this.props.actionGetAllCustomer(token, id);
           },
         },
@@ -190,10 +192,7 @@ class Customer extends React.Component {
           }
           onSubmit={() => this.handleAddCustomer()}
         />
-        <Header
-          titleText="Customer"
-          stylesHeader={{backgroundColor: ThemeColor, height: 50}}
-        />
+        <Header titleText="Customer" />
         <ScrollView style={{marginVertical: 5}}>
           {this.props.allMyCustomer.data <= 0 ? (
             <View />
@@ -213,7 +212,8 @@ class Customer extends React.Component {
                   <View
                     style={{
                       borderWidth: 2,
-
+                      borderRightWidth: 0,
+                      borderLeftWidth: 0,
                       borderColor: 'dimgrey',
                       flexDirection: 'row',
                       padding: 10,
@@ -257,7 +257,11 @@ class Customer extends React.Component {
           )}
         </ScrollView>
 
-        <Fab position="bottomRight" active onPress={() => this.showModal()}>
+        <Fab
+          style={{backgroundColor: this.props.DarkMode.button}}
+          position="bottomRight"
+          active
+          onPress={() => this.showModal()}>
           <Icon name="add" />
         </Fab>
       </View>
@@ -268,6 +272,8 @@ class Customer extends React.Component {
 const mapStateToProps = state => {
   return {
     allMyCustomer: state.getAllCustomer,
+    DarkMode: state.setDarkMode,
+    isVibrate: state.setVibrate.isVibrate,
   };
 };
 

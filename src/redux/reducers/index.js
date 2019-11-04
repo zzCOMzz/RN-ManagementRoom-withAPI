@@ -6,6 +6,7 @@ import {reducerGetAllRoom} from './reducerRoom';
 import {reducerGetAllCustomer} from './reducerCustomer';
 import {reducerGetRoomById} from './reducerRoomById';
 import {reducerGetAllOrder} from './reducerOrder';
+import {setDarkMode, setVibrate} from './reducerSetting';
 const reducerRouter = createNavigationReducer(RootNavigator);
 
 const appReducer = combineReducers({
@@ -14,6 +15,8 @@ const appReducer = combineReducers({
   getAllCustomer: reducerGetAllCustomer,
   getRoomById: reducerGetRoomById,
   getAllOrder: reducerGetAllOrder,
+  setDarkMode,
+  setVibrate,
 });
 
 export default appReducer;

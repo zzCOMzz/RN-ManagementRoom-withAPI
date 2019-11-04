@@ -19,9 +19,9 @@ app.use(cors());
 
 app.group('/api/v2', router => {
   router.use('/auth', AuthAdminRoutes);
-  router.use('/:id/room', RoomRoutes);
-  router.use('/:id/customer', CusRoutes);
-  router.use('/:id/order', OrderRoutes);
+  router.use('/room', RoomRoutes);
+  router.use('/customer', CusRoutes);
+  router.use('/order', OrderRoutes);
 });
 
 module.exports = app;

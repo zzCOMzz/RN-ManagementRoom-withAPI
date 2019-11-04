@@ -3,6 +3,9 @@ import React from 'react';
 import {Icon} from 'native-base';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
+import {createBottomTabNavigator, BottomTabBar} from 'react-navigation-tabs';
+
+import {connect} from 'react-redux';
 
 // ? import Screen
 import CheckInScreen from '../screens/CheckIn';
@@ -12,7 +15,9 @@ import SettingScreen from '../screens/Setting';
 
 import {ThemeColor} from '../Assets/constantColor';
 
-const BottomTabStack = createMaterialBottomTabNavigator(
+const TabBarComponent = props => <BottomTabBar {...props} />;
+
+const BottomTabStack = createBottomTabNavigator(
   {
     CheckIn: {
       screen: CheckInScreen,
@@ -44,7 +49,6 @@ const BottomTabStack = createMaterialBottomTabNavigator(
     Setting: {
       screen: SettingScreen,
       navigationOptions: {
-        tabBarLabel: 'Setting',
         tabBarIcon: ({tintColor}) => (
           <Icon name="ios-settings" style={{color: tintColor}} />
         ),
@@ -53,10 +57,26 @@ const BottomTabStack = createMaterialBottomTabNavigator(
   },
   {
     initialRouteName: 'Room',
-    activeColor: '#ccdeff',
-    inactiveColor: '#9ec9ff',
-    barStyle: {
-      backgroundColor: `${ThemeColor}`,
+    defaultNavigationOptions: ({navigation}) => ({
+      tabBarIcon: ({tintColor}) => {},
+    }),
+    tabBarComponent: props => {
+      // console.log('PROPS TABbAR', props);
+      let changeMode;
+      if (props.navigation.state.routes[3].params === undefined) {
+        changeMode = '#3360ff';
+      } else {
+        changeMode = props.navigation.state.routes[3].params.bottom;
+      }
+      return (
+        <TabBarComponent
+          {...props}
+          style={{
+            backgroundColor: changeMode,
+            color: 'white',
+          }}
+        />
+      );
     },
   },
 );

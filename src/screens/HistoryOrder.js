@@ -20,18 +20,18 @@ class HistoryOrder extends React.Component {
   render() {
     return (
       <View>
-        <Text>helo</Text>
         {this.props.allOrder.data <= 0 ? (
           <View>
-            <Text>helo3</Text>
+            <Text>No Order History</Text>
           </View>
         ) : (
-          this.props.allOrder.data.data.map(item => {
+          this.props.allOrder.data.data.map(item => (
             <View>
+              <Text>{item.duration}</Text>
+              <Text>{item.customer_id.name}</Text>
               <Text>{item.room_id.room_name}</Text>
-              <Text>helo2</Text>
-            </View>;
-          })
+            </View>
+          ))
         )}
       </View>
     );
@@ -46,7 +46,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getAllOrder: token => dispatch(actionGetAllOrder(token)),
+    getAllOrder: (token, id) => dispatch(actionGetAllOrder(token, id)),
   };
 };
 

@@ -4,7 +4,7 @@ import {Host} from '../../functions/Host';
 
 export const actionGetAllRoom = (token, id) => ({
   type: `${types.GET_ALL_ROOM}`,
-  payload: axios.get(`${Host}/${id}/room`, {
+  payload: axios.get(`${Host}/room/${id}`, {
     headers: {authorization: `${token}`},
   }),
 });

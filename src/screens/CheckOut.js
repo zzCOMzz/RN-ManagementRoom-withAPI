@@ -20,7 +20,7 @@ class CheckOut extends React.Component {
     super(props);
     this.state = {
       roomId: this.props.navigation.getParam('roomId'),
-      duration: this.props.getRoomId.data.data.order_id.duration,
+      duration: this.props.navigation.getParam('duration'),
       customerName: this.props.getRoomId.data.data.customer_id.name,
       roomName: this.props.getRoomId.data.data.room_name,
       orderId: this.props.getRoomId.data.data.order_id._id,

@@ -16,7 +16,7 @@ export const AddNewRoom = async roomName => {
   const token = await getUserToken();
   const id = await getAdminId();
   const response = await axios.post(
-    `${Host}/${id}/room`,
+    `${Host}/room/${id}`,
     {
       roomName,
     },
@@ -29,7 +29,7 @@ export const updateRoom = async (roomName, roomId) => {
   const token = await getUserToken();
   const id = await getAdminId();
   const response = await axios.put(
-    `${Host}/${id}/room/${roomId}`,
+    `${Host}/room/${id}/${roomId}`,
     {
       roomName,
     },
@@ -42,7 +42,7 @@ export const deleteRoomWithOrder = async (roomId, orderId) => {
   const token = await getUserToken();
   const id = await getAdminId();
   const response = await axios.delete(
-    `${Host}/${id}/room/${roomId}/${orderId}`,
+    `${Host}/room/${id}/${roomId}/${orderId}`,
     {
       headers: {Authorization: `${token}`},
     },
@@ -54,7 +54,7 @@ export const deleteRoomWithOrder = async (roomId, orderId) => {
 export const deleteRoom = async roomId => {
   const token = await getUserToken();
   const id = await getAdminId();
-  const response = await axios.delete(`${Host}/${id}/room/${roomId}`, {
+  const response = await axios.delete(`${Host}/room/${id}/${roomId}`, {
     headers: {Authorization: `${token}`},
   });
 
@@ -64,7 +64,7 @@ export const deleteRoom = async roomId => {
 export const addCustomer = async form => {
   const token = await getUserToken();
   const id = await getAdminId();
-  const response = await axios.post(`${Host}/${id}/customer`, form, {
+  const response = await axios.post(`${Host}/customer/${id}`, form, {
     headers: {Authorization: `${token}`},
   });
   return response;
@@ -73,7 +73,7 @@ export const addCustomer = async form => {
 export const updateCustomer = async (form, cusId) => {
   const token = await getUserToken();
   const id = await getAdminId();
-  const response = await axios.put(`${Host}/${id}/customer/${cusId}`, form, {
+  const response = await axios.put(`${Host}/customer/${id}/${cusId}`, form, {
     headers: {Authorization: `${token}`},
   });
   return response;
@@ -82,7 +82,7 @@ export const updateCustomer = async (form, cusId) => {
 export const deletCustomer = async customerId => {
   const token = await getUserToken();
   const id = await getAdminId();
-  const response = await axios.delete(`${Host}/${id}/customer/${customerId}`, {
+  const response = await axios.delete(`${Host}/customer/${id}/${customerId}`, {
     headers: {Authorization: `${token}`},
   });
   return response;
@@ -91,7 +91,7 @@ export const deletCustomer = async customerId => {
 export const addNewOrder = async form => {
   const id = await getAdminId();
   const token = await getUserToken();
-  const response = await axios.post(`${Host}/${id}/order`, form, {
+  const response = await axios.post(`${Host}/order/${id}`, form, {
     headers: {Authorization: `${token}`},
   });
   return response;
@@ -100,7 +100,7 @@ export const addNewOrder = async form => {
 export const checkoutOrder = async (form, orderId) => {
   const token = await getUserToken();
   const id = await getAdminId();
-  const response = await axios.put(`${Host}/${id}/order/${orderId}`, form, {
+  const response = await axios.put(`${Host}/order/${id}/${orderId}`, form, {
     headers: {Authorization: `${token}`},
   });
   return response;

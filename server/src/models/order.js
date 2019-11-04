@@ -18,6 +18,7 @@ const OrderSchema = new Schema({
   },
   order_end_time: {
     type: Date,
+    default: Date.now(),
   },
   is_done: {
     type: Boolean,

@@ -14,10 +14,11 @@ class LoadingScreen extends React.Component {
   async componentDidMount() {
     const token = await getUserToken();
     const id = await getAdminId();
+
     await actionGetAllRoom(token, id);
     await actionGetAllCustomer(token, id);
     await actionGetAllOrder(token, id);
-
+    await this.props.DarkMode;
     token != null
       ? this.props.navigation.navigate('App')
       : this.props.navigation.navigate('Auth');
@@ -32,7 +33,9 @@ class LoadingScreen extends React.Component {
 }
 
 const mapStateToProp = state => {
-  return {...state};
+  return {
+    DarkMode: state.setDarkMode,
+  };
 };
 
 export default connect(

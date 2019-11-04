@@ -6,9 +6,14 @@ import {
   ToastAndroid,
   StatusBar,
   Keyboard,
+  Dimensions,
+  StyleSheet,
+  Vibration,
+  AsyncStorage,
 } from 'react-native';
 import Header from '../components/header';
 import {ThemeColor} from '../Assets/constantColor';
+import moment from 'moment';
 
 import {ModalAddNewOrder} from '../components/modalOrder';
 
@@ -17,7 +22,7 @@ import {getUserToken, addNewOrder, getAdminId} from '../functions';
 import {actionGetAllCustomer} from '../redux/actions/actionCustomer';
 import {actionGetAllRoom} from '../redux/actions/actionRoom';
 import {actionGetRoomById} from '../redux/actions/actionRoomById';
-
+import {actionGetAllOrder} from '../redux/actions/actionOrder';
 class CheckIn extends React.Component {
   constructor(props) {
     super(props);
@@ -27,22 +32,42 @@ class CheckIn extends React.Component {
       roomName: '',
       roomId: '',
       selectedCustomerId: '',
+      isLoading: false,
     };
   }
   async componentDidMount() {
     const token = await getUserToken();
-    const id = await getAdminId();
+    // const id = await getAdminId();
+    const id = await AsyncStorage.getItem('admin-id');
     await this.props.dipatchCustomer(token, id);
-    await this.props.dispatchRoom(token, id);
+    // await this.props.dispatchRoom(token, id);
+    await this.props.dispatchAllOrder(token, id);
     await this.props.allRoom;
     await this.props.allCustomer;
+
+    this.intervalTime = setInterval(async () => {
+      await this.props.dispatchRoom(token, id);
+      // this.timer();
+      this.props.allRoom;
+    }, 1000 * 30);
   }
 
   onClickRoom = (roomName, roomId) => {
     this.setState({modalIsVisible: true, roomName, roomId});
   };
 
+  timer = time => {
+    let timeLeft = moment(time).diff(moment(), 'seconds');
+    if (timeLeft < 1) {
+      Vibration.vibrate([2000, 4000, 2000]);
+      return ' Rent Time Out';
+    } else {
+      return `${timeLeft} seconds left`;
+    }
+  };
+
   handleAddCheckIn = async () => {
+    this.setState({isLoading: true});
     Keyboard.dismiss();
     const token = await getUserToken();
     const id = await getAdminId();
@@ -51,15 +76,19 @@ class CheckIn extends React.Component {
         roomId: this.state.roomId,
         customerId: this.state.selectedCustomerId,
         duration: this.state.duration,
+        orderEnd: moment().add(this.state.duration, 'minutes'),
       });
+
       await this.props.dipatchCustomer(token, id);
       await this.props.dispatchRoom(token, id);
+
       ToastAndroid.showWithGravity(
         `${res.data.message}`,
         ToastAndroid.LONG,
         ToastAndroid.CENTER,
       );
       this.setState({
+        isLoading: false,
         modalIsVisible: false,
         roomId: '',
         duration: 0,
@@ -88,15 +117,7 @@ class CheckIn extends React.Component {
   render() {
     return (
       <View>
-        <StatusBar
-          backgroundColor={ThemeColor}
-          animated
-          barStyle="light-content"
-        />
-        <Header
-          titleText="Check In"
-          stylesHeader={{backgroundColor: ThemeColor, height: 50}}
-        />
+        <Header titleText="Check In" />
         <ModalAddNewOrder
           title="CheckIn"
           modalVisible={this.state.modalIsVisible}
@@ -110,6 +131,7 @@ class CheckIn extends React.Component {
           dataCustomer={this.props.allCustomer}
           duration={duration => this.setState({duration})}
           roomName={this.state.roomName}
+          isLoading={this.state.isLoading}
           onSelectCusomerId={id => this.setState({selectedCustomerId: id})}
         />
         <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -122,19 +144,19 @@ class CheckIn extends React.Component {
                   key={item._id}
                   onPress={() =>
                     item.is_booked
-                      ? this.handleToCheckOut(item._id, item.order_id.duration)
+                      ? this.handleToCheckOut(
+                          item._id,
+                          this.timer(item.order_id.order_end_time),
+                        )
                       : this.onClickRoom(item.room_name, item._id)
                   }>
                   <View
-                    style={{
-                      borderWidth: 4,
-                      borderRadius: 8.5,
-                      height: 110,
-                      width: 115,
-                      margin: 10,
-                      paddingTop: 20,
-                      backgroundColor: item.is_booked ? 'gray' : '#4cd137',
-                    }}>
+                    style={[
+                      styles.containerRoom,
+                      item.is_booked
+                        ? {backgroundColor: 'gray', borderColor: '#2f3542'}
+                        : {borderColor: '#009432', backgroundColor: '#4cd137'},
+                    ]}>
                     <Text
                       style={{
                         alignSelf: 'center',
@@ -145,12 +167,18 @@ class CheckIn extends React.Component {
                     </Text>
 
                     <Text
-                      style={{
-                        fontSize: 16,
-                        color: item.is_booked ? 'white' : 'yellow',
-                        alignSelf: 'center',
-                      }}>
+                      style={[
+                        styles.textRoom,
+                        {color: item.is_booked ? 'white' : 'yellow'},
+                      ]}>
                       {item.is_booked ? item.customer_id.name : 'Available'}
+                    </Text>
+                    <Text style={{color: 'white', alignSelf: 'center'}}>
+                      {!item.is_booked
+                        ? ''
+                        : item.order_id.order_end_time != null
+                        ? this.timer(item.order_id.order_end_time)
+                        : ''}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -167,6 +195,9 @@ const mapStateToProps = state => {
   return {
     allRoom: state.getAllRoom,
     allCustomer: state.getAllCustomer,
+    allOrder: state.getAllOrder,
+    DarkMode: state.setDarkMode,
+    isVibrate: state.setVibrate.isVibrate,
   };
 };
 
@@ -176,9 +207,29 @@ const mapDispatchToProps = dispatch => {
     dispatchRoom: (token, id) => dispatch(actionGetAllRoom(token, id)),
     dispatchRoomById: (token, roomId, id) =>
       dispatch(actionGetRoomById(token, roomId, id)),
+    dispatchAllOrder: (token, id) => dispatch(actionGetAllOrder(token, id)),
   };
 };
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(CheckIn);
+
+const styles = StyleSheet.create({
+  containerRoom: {
+    borderWidth: 4,
+
+    borderBottomWidth: 0,
+    borderRightWidth: 0,
+    borderRadius: 7.5,
+    height: Dimensions.get('screen').height / 7.5,
+    width: Dimensions.get('screen').width / 2.25,
+    margin: 10,
+    paddingTop: 10,
+  },
+  textRoom: {
+    fontSize: 16,
+
+    alignSelf: 'center',
+  },
+});

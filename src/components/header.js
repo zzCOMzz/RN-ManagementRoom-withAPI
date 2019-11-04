@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Text, View} from 'react-native';
-import {Icon} from 'native-base';
+import {connect} from 'react-redux';
 
 class Header extends Component {
   constructor(props) {
@@ -13,10 +13,16 @@ class Header extends Component {
           {
             flexDirection: 'row',
             justifyContent: 'center',
+            height: 50,
+            backgroundColor: this.props.DarkMode.header,
           },
           this.props.stylesHeader,
         ]}>
-        <Text style={{fontSize: 30, color: 'white', marginTop: 3}}>
+        <Text
+          style={[
+            {fontSize: 30, color: 'white', marginTop: 3},
+            this.props.styleText,
+          ]}>
           {this.props.titleText}
         </Text>
       </View>
@@ -24,4 +30,16 @@ class Header extends Component {
   }
 }
 
-export default Header;
+const mapStateToProps = state => {
+  return {
+    DarkMode: state.setDarkMode,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Header);

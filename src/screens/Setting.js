@@ -1,34 +1,58 @@
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Switch, StatusBar} from 'react-native';
 import {Body, Thumbnail, Left, Card, CardItem, Icon, Right} from 'native-base';
 import IconFA from 'react-native-vector-icons/FontAwesome';
+import IconMA from 'react-native-vector-icons/MaterialIcons';
 import Header from '../components/header';
-import {ThemeColor} from '../Assets/constantColor';
+
 import AsyncStorage from '@react-native-community/async-storage';
 import {getUserToken, getAdminId} from '../functions';
 import {connect} from 'react-redux';
 import {actionGetAllOrder} from '../redux/actions/actionOrder';
+import {
+  actionSetDarkMode,
+  actionSetVibrate,
+} from '../redux/actions/actionSetting';
 
 class Setting extends React.Component {
+  static navigationOptions = {
+    tabBarLabel: 'Settings',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       username: '',
+      isVibrate: false,
+      isDarkmode: false,
     };
+    this.props.navigation.setParams({
+      bottom: this.props.DarkMode.bottom,
+    });
   }
   async componentDidMount() {
+    AsyncStorage.getItem('admin').then(username => {
+      this.setState({username});
+    });
     const token = await getUserToken();
     const id = await getAdminId();
+
     await this.props.getAllOrder(token, id);
-    const username = await AsyncStorage.getItem('admin');
-    this.setState({username});
+
+    setInterval(() => {
+      // console.log('Setting Props ', this.props.DarkMode.bottom);
+      // console.log('Setting navigation ', this.props.navigation);
+    }, 5000);
   }
   render() {
     return (
-      <View style={{flex: 1}}>
-        <Header
-          titleText="Setting"
-          stylesHeader={{backgroundColor: ThemeColor, height: 50}}
+      <View style={{flex: 1, backgroundColor: this.props.DarkMode.background}}>
+        <Header titleText="Setting" />
+        <StatusBar
+          backgroundColor={this.props.DarkMode.status}
+          barStyle={
+            this.props.DarkMode.isDarkmode ? 'light-content' : 'dark-content'
+          }
         />
         <Card>
           <CardItem>
@@ -40,8 +64,10 @@ class Setting extends React.Component {
                 }}
               />
               <Body>
-                <Text>Admin</Text>
-                <Text note>{this.state.username}</Text>
+                <Text style={{fontSize: 22}}>Admin</Text>
+                <Text style={{fontSize: 16}} note>
+                  {this.state.username}
+                </Text>
               </Body>
             </Left>
           </CardItem>
@@ -50,10 +76,12 @@ class Setting extends React.Component {
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('History')}>
             <CardItem>
-              <IconFA name="history" size={25} />
-              <Text style={{fontSize: 20, marginLeft: 18}}>History Order</Text>
-              <Left />
-
+              <Left>
+                <IconFA name="history" size={28} />
+                <Text style={{fontSize: 20, marginLeft: 20}}>
+                  History Order
+                </Text>
+              </Left>
               <Right>
                 <Icon style={{fontSize: 28}} name="ios-arrow-forward" />
               </Right>
@@ -61,10 +89,53 @@ class Setting extends React.Component {
           </TouchableOpacity>
         </Card>
 
+        <Text
+          style={{
+            fontSize: 22,
+            color: this.props.DarkMode.text,
+            marginLeft: '5%',
+            marginTop: '3%',
+          }}>
+          Setting
+        </Text>
         <Card>
+          <CardItem>
+            <IconMA name="vibration" size={28} />
+            <Text style={{fontSize: 20, marginLeft: 20}}>Vibrate Mode</Text>
+            <Left />
+            <Right>
+              <Switch
+                trackColor="gray"
+                value={this.props.isVibrate}
+                onValueChange={() =>
+                  // this.setState({isVibrate: !this.state.isVibrate})
+                  this.props.vibrate()
+                }
+              />
+            </Right>
+          </CardItem>
+          <CardItem>
+            <Icon name="ios-moon" size={28} />
+            <Text style={{fontSize: 20, marginLeft: 20}}>Dark Mode</Text>
+            <Left />
+            <Right>
+              <Switch
+                trackColor="gray"
+                value={this.props.DarkMode.isDarkmode}
+                onValueChange={() => {
+                  this.props.navigation.setParams({
+                    bottom: this.props.DarkMode.isDarkmode
+                      ? '#3360ff'
+                      : '#2f3542',
+                  });
+                  this.props.darkMode(!this.props.DarkMode.isDarkmode);
+                }}
+              />
+            </Right>
+          </CardItem>
           <TouchableOpacity
-            onPress={() => {
-              AsyncStorage.clear();
+            onPress={async () => {
+              await AsyncStorage.clear();
               this.props.navigation.navigate('Loading');
             }}>
             <CardItem>
@@ -84,12 +155,16 @@ class Setting extends React.Component {
 const mapStateToProps = state => {
   return {
     allOrder: state.getAllOrder,
+    DarkMode: state.setDarkMode,
+    isVibrate: state.setVibrate.isVibrate,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    getAllOrder: token => dispatch(actionGetAllOrder(token)),
+    getAllOrder: (token, id) => dispatch(actionGetAllOrder(token, id)),
+    darkMode: params => dispatch(actionSetDarkMode(params)),
+    vibrate: () => dispatch(actionSetVibrate()),
   };
 };
 export default connect(

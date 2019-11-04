@@ -7,6 +7,8 @@ import {
   ToastAndroid,
   ScrollView,
   StatusBar,
+  Dimensions,
+  Vibration,
   StyleSheet,
 } from 'react-native';
 import {Icon, Fab} from 'native-base';
@@ -24,6 +26,7 @@ import {
 
 import {connect} from 'react-redux';
 import {actionGetAllRoom} from '../redux/actions/actionRoom';
+import {actionGetAllOrder} from '../redux/actions/actionOrder';
 
 console.disableYellowBox = true;
 class Room extends React.Component {
@@ -39,12 +42,14 @@ class Room extends React.Component {
   async componentDidMount() {
     const id = await getAdminId();
     const token = await getUserToken();
+
     if (!token) {
       Alert.alert('You Are Not Login', 'Please Login First', [
         {text: 'Login', onPress: () => this.props.navigation.navigate('Auth')},
       ]);
     }
     await this.props.actionGetAllRoom(token, id);
+    await this.props.actionGetAllOrder(token, id);
     await this.props.allRoom.data;
   }
 
@@ -89,6 +94,7 @@ class Room extends React.Component {
       ToastAndroid.LONG,
       ToastAndroid.CENTER,
     );
+    Vibration.vibrate(2000);
     await this.props.actionGetAllRoom(token, id);
   };
 
@@ -140,16 +146,16 @@ class Room extends React.Component {
           onSubmit={() => this.handleAddNewRoom()}
         />
         <StatusBar
-          backgroundColor={ThemeColor}
-          animated
+          backgroundColor={this.props.DarkMode.status}
           barStyle="light-content"
         />
-        <Header
-          titleText="Room"
-          stylesHeader={{backgroundColor: ThemeColor, height: 50}}
-        />
+        <Header titleText="Room" />
         <ScrollView>
-          <View style={{flexWrap: 'wrap-reverse', flexDirection: 'row'}}>
+          <View
+            style={{
+              flexWrap: 'wrap',
+              flexDirection: 'row',
+            }}>
             {this.props.allRoom.data <= 0 ? (
               <View />
             ) : (
@@ -173,7 +179,7 @@ class Room extends React.Component {
 
         <Fab
           position="bottomRight"
-          style={{backgroundColor: '#3498db'}}
+          style={{backgroundColor: this.props.DarkMode.button}}
           onPress={() => this.setState({isModalAdd: true})}>
           <Icon name="add" />
         </Fab>
@@ -185,11 +191,13 @@ class Room extends React.Component {
 const mapStateToProps = state => {
   return {
     allRoom: state.getAllRoom,
+    DarkMode: state.setDarkMode,
+    isVibrate: state.setVibrate.isVibrate,
   };
 };
 export default connect(
   mapStateToProps,
-  {actionGetAllRoom},
+  {actionGetAllRoom, actionGetAllOrder},
 )(Room);
 
 const Styles = StyleSheet.create({
@@ -203,10 +211,21 @@ const Styles = StyleSheet.create({
   iconAdd: {fontSize: 50, alignSelf: 'center'},
   textRoomName: {alignSelf: 'center', fontSize: 30},
   containerRoom: {
-    borderWidth: 4,
-    borderRadius: 12,
-    height: 80,
-    width: 80,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.5,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowRadius: 8,
+    borderWidth: 5,
+    borderColor: '#ddd',
+    borderBottomWidth: 0,
+    borderRightWidth: 0,
+    borderRadius: 4,
+    height: Dimensions.get('screen').height / 9,
+    width: Dimensions.get('screen').width * 0.28,
     margin: 10,
     paddingTop: 15,
   },
