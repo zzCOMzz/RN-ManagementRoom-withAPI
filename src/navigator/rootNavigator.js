@@ -46,14 +46,16 @@ const AppStackNavigator = createStackNavigator({
   },
   History: {
     screen: HistoryOrderScreen,
-    navigationOptions: {
-      headerTitle: 'History Customer',
-      headerTitleStyle: {
-        color: 'white',
-      },
-      headerStyle: {
-        backgroundColor: ThemeColor,
-      },
+    navigationOptions: ({navigation}) => {
+      return {
+        headerTitle: 'History Customer',
+        headerTitleStyle: {
+          color: navigation.getParam('text'),
+        },
+        headerStyle: {
+          backgroundColor: navigation.getParam('header'),
+        },
+      };
     },
   },
 });

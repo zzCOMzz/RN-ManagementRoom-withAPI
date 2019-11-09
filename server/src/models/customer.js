@@ -22,6 +22,9 @@ const CustomerSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Admin',
   },
+  photo: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model('Customer', CustomerSchema);

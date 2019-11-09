@@ -6,13 +6,15 @@ module.exports = {
     const customerName = req.body.customerName;
     const customerID = req.body.customerID;
     const customerPhone = req.body.customerPhone;
-
+    const customerPhoto = req.customerPhoto;
+    console.log(customerPhoto, 'Cutomer Photo ');
     try {
       const newCus = await new Customer({
         name: customerName,
         identity_number: customerID,
         phone_number: Number(customerPhone),
         admin_id: adminId,
+        photo: customerPhoto,
       });
 
       await newCus.save();

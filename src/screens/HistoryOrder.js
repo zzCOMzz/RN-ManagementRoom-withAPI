@@ -1,9 +1,9 @@
 import React from 'react';
-import {View, Text, ScrollView} from 'react-native';
-
+import {View, Text, ScrollView, ToastAndroid} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
 import {actionGetAllOrder} from '../redux/actions/actionOrder';
-import {getUserToken, getAdminId} from '../functions';
+import {getUserToken, getAdminId, deleteOrderById} from '../functions';
 
 class HistoryOrder extends React.Component {
   constructor(props) {
@@ -14,9 +14,16 @@ class HistoryOrder extends React.Component {
     const token = await getUserToken();
     const id = await getAdminId();
     await this.props.getAllOrder(token, id);
-    console.log('ORDER ', this.props.allOrder.data);
   }
 
+  deleteOrder = async id => {
+    const {data} = await deleteOrderById(id);
+
+    const token = await getUserToken();
+    const idUser = await getAdminId();
+    await this.props.getAllOrder(token, idUser);
+    ToastAndroid.show(`${data.message}`, 3000);
+  };
   render() {
     return (
       <View
@@ -24,6 +31,7 @@ class HistoryOrder extends React.Component {
           flex: 1,
           flexDirection: 'column-reverse',
           justifyContent: 'flex-end',
+          backgroundColor: this.props.DarkMode.background,
         }}>
         <ScrollView>
           {this.props.allOrder.data <= 0 ? (
@@ -36,7 +44,7 @@ class HistoryOrder extends React.Component {
                 key={item._id}
                 style={{
                   borderWidth: 2,
-                  backgroundColor: item.is_done ? '#18dcff' : '#ff4d4d',
+                  backgroundColor: item.is_done ? '#1e90ff' : '#ff4d4d',
                   borderColor: item.is_done ? '#17c0eb' : '#ff3838',
                   borderRadius: 8,
                   flexDirection: 'row',
@@ -44,17 +52,22 @@ class HistoryOrder extends React.Component {
                   padding: 10,
                 }}>
                 <View>
-                  <Text>Customer : {item.customer_id.name}</Text>
-                  <Text>Room : {item.room_id.room_name}</Text>
-                  <Text>
-                    End Order Time
-                    {item.order_end_time.slice(0, 10)}{' '}
+                  <Text style={{color: this.props.DarkMode.text}}>
+                    Customer : {item.customer_id.name}
+                  </Text>
+                  <Text style={{color: this.props.DarkMode.text}}>
+                    Room : {item.room_id.room_name}
+                  </Text>
+                  <Text style={{color: this.props.DarkMode.text}}>
+                    End Order Time {item.order_end_time.slice(0, 10)}{' '}
                     {item.order_end_time.slice(11, 16)}
                   </Text>
-                  <Text>Duration : {item.duration} Minutes</Text>
+                  <Text style={{color: this.props.DarkMode.text}}>
+                    Duration : {item.duration} Minutes
+                  </Text>
                 </View>
                 <View>
-                  <Text>
+                  <Text style={{color: this.props.DarkMode.text}}>
                     Status :{' '}
                     {item.is_booked
                       ? 'ON BOOKED'
@@ -62,6 +75,17 @@ class HistoryOrder extends React.Component {
                       ? 'RENT IS DONE'
                       : 'RENT NO COMPLETED'}
                   </Text>
+                  {item.is_booked ? (
+                    <View />
+                  ) : (
+                    <View style={{position: 'absolute', bottom: 0, right: 0}}>
+                      <Icon
+                        name="ios-trash"
+                        style={{fontSize: 27, color: 'red'}}
+                        onPress={() => this.deleteOrder(item._id)}
+                      />
+                    </View>
+                  )}
                 </View>
               </View>
             ))
@@ -75,6 +99,7 @@ class HistoryOrder extends React.Component {
 const mapStateToProps = state => {
   return {
     allOrder: state.getAllOrder,
+    DarkMode: state.setDarkMode,
   };
 };
 

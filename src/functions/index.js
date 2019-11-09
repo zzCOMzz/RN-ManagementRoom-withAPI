@@ -105,3 +105,12 @@ export const checkoutOrder = async (form, orderId) => {
   });
   return response;
 };
+
+export const deleteOrderById = async orderId => {
+  const token = await getUserToken();
+  const id = await getAdminId();
+  const response = await axios.delete(`${Host}/order/${id}/${orderId}`, {
+    headers: {Authorization: `${token}`},
+  });
+  return response;
+};

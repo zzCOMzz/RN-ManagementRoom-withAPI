@@ -2,7 +2,7 @@ import * as types from '../types';
 
 const initialState = {
   isDarkmode: false,
-  button: '#3360ff',
+  button: '#f1f2f6',
   header: '#fff',
   bottom: '#fff',
   text: '#2d3436',
@@ -28,7 +28,7 @@ export const setDarkMode = (state = initialState, action) => {
       } else {
         return {
           isDarkmode: false,
-          button: '#3360ff',
+          button: '#f1f2f6',
           header: '#fff',
           bottom: '#fff',
           text: '#2d3436',

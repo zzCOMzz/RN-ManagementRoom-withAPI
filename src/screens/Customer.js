@@ -24,6 +24,8 @@ import {
 } from '../functions';
 import {connect} from 'react-redux';
 import {actionGetAllCustomer} from '../redux/actions/actionCustomer';
+import ImagePicker from 'react-native-image-picker';
+
 class Customer extends React.Component {
   constructor(props) {
     super(props);
@@ -34,6 +36,7 @@ class Customer extends React.Component {
       identity: '',
       phoneNumber: '',
       customerId: '',
+      image: '',
     };
   }
 
@@ -51,11 +54,15 @@ class Customer extends React.Component {
   handleAddCustomer = async () => {
     const token = await getUserToken();
     const id = await getAdminId();
-    const res = await addCustomer({
-      customerName: this.state.name,
-      customerID: this.state.identity,
-      customerPhone: this.state.phoneNumber,
-    });
+    console.log('State Image ', this.state.image);
+
+    const formData = new FormData();
+    formData.append('customerName', this.state.name);
+    formData.append('customerID', this.state.identity);
+    formData.append('customerPhone', this.state.phoneNumber);
+    formData.append('photo', this.state.image);
+
+    const res = await addCustomer(formData);
     ToastAndroid.showWithGravity(
       `${res.data.message}`,
       ToastAndroid.LONG,
@@ -68,6 +75,7 @@ class Customer extends React.Component {
       phoneNumber: '',
       customerId: '',
       isModalVisible: false,
+      image: '',
     });
   };
 
@@ -104,6 +112,7 @@ class Customer extends React.Component {
       name: '',
       identity: '',
       phoneNumber: '',
+      image: '',
     });
   };
 
@@ -111,13 +120,13 @@ class Customer extends React.Component {
     const token = await getUserToken();
     const id = await getAdminId();
     Alert.alert(
-      `Delete Customer ${cusName}`,
+      `Delete Customer ${cusName} ?`,
       'Are You Sure Want to Delete this Customer',
       [
         {
           text: 'Cancel',
           onPress: () => {
-            alert('deleted was canceled');
+            Alert.alert('Canceled', 'Deleted customer was cancel');
           },
           style: 'cancel',
         },
@@ -125,7 +134,7 @@ class Customer extends React.Component {
           text: 'Delete',
           onPress: async () => {
             await deletCustomer(cusId);
-            alert('Customer  was deleted');
+            Alert.alert('Customer  was deleted');
             Vibration.vibrate(2000);
             await this.props.actionGetAllCustomer(token, id);
           },
@@ -134,6 +143,35 @@ class Customer extends React.Component {
     );
   };
 
+  handleAddPhoto = () => {
+    const options = {
+      title: 'Select Avatar',
+
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+    ImagePicker.showImagePicker(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        const image = {
+          uri: response.uri,
+          fileName: response.fileName,
+          type: response.type,
+        };
+
+        this.setState({
+          image,
+        });
+      }
+    });
+  };
   handleErr = () => {
     ToastAndroid.showWithGravity(
       'This User Still Using Our Room',
@@ -154,6 +192,8 @@ class Customer extends React.Component {
       <View style={{flex: 1, backgroundColor: this.props.DarkMode.background}}>
         <ModalAddCustomer
           title="Update Customer"
+          handleAddPhoto={() => this.handleAddPhoto()}
+          image={this.state.image}
           name={this.state.name}
           changeName={text => this.setState({name: text})}
           identity={this.state.identity}
@@ -168,12 +208,15 @@ class Customer extends React.Component {
               identity: '',
               phoneNumber: '',
               customerId: '',
+              image: '',
             })
           }
           onSubmit={() => this.handleUpdateCustomer()}
         />
         <ModalAddCustomer
           title="Add Customer"
+          handleAddPhoto={() => this.handleAddPhoto()}
+          image={this.state.image}
           name={this.state.name}
           changeName={text => this.setState({name: text})}
           identity={this.state.identity}
@@ -188,6 +231,7 @@ class Customer extends React.Component {
               identity: '',
               phoneNumber: '',
               customerId: '',
+              image: '',
             })
           }
           onSubmit={() => this.handleAddCustomer()}
@@ -268,7 +312,10 @@ class Customer extends React.Component {
           position="bottomRight"
           active
           onPress={() => this.showModal()}>
-          <Icon name="add" />
+          <Icon
+            name="add"
+            style={{color: this.props.DarkMode.isDarkmode ? 'white' : 'blue'}}
+          />
         </Fab>
       </View>
     );

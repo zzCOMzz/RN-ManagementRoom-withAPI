@@ -38,13 +38,11 @@ class Setting extends React.Component {
     const id = await getAdminId();
 
     await this.props.getAllOrder(token, id);
-
-    setInterval(() => {
-      // console.log('Setting Props ', this.props.DarkMode.bottom);
-      // console.log('Setting navigation ', this.props.navigation);
-    }, 5000);
   }
   render() {
+    let hd = this.props.darkMode.isDarkmode
+      ? {header: '#34495e'}
+      : {header: 'white'};
     return (
       <View style={{flex: 1, backgroundColor: this.props.DarkMode.background}}>
         <Header titleText="Setting" />
@@ -76,7 +74,12 @@ class Setting extends React.Component {
         </Card>
         <Card>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('History')}>
+            onPress={() =>
+              this.props.navigation.navigate('History', {
+                header: this.props.DarkMode.header,
+                text: this.props.DarkMode.text,
+              })
+            }>
             <CardItem>
               <Left>
                 <IconFA name="history" size={28} />
@@ -117,7 +120,10 @@ class Setting extends React.Component {
             </Right>
           </CardItem>
           <CardItem>
-            <Icon name="ios-moon" size={28} />
+            <Icon
+              name={this.props.DarkMode.isDarkmode ? 'ios-moon' : 'ios-sunny'}
+              size={28}
+            />
             <Text style={{fontSize: 20, marginLeft: 20}}>Dark Mode</Text>
             <Left />
             <Right>

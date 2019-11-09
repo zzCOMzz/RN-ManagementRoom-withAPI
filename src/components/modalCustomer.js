@@ -1,17 +1,49 @@
 import React from 'react';
-import {Text, View, TouchableOpacity, Dimensions} from 'react-native';
+import {Text, View, TouchableOpacity, Dimensions, Image} from 'react-native';
 import {Input, Item, Label, Icon, Form, Button} from 'native-base';
 
 import Modal from 'react-native-modal';
-
+import ImagePicker from 'react-native-image-picker';
 class ModalAddCustomer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       modalVisible: this.props.modalVisible,
+      image: '',
     };
   }
+
+  handleAddPhoto = () => {
+    const options = {
+      title: 'Select Avatar',
+
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+    ImagePicker.showImagePicker(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        const image = {
+          uri: response.uri,
+          fileName: response.fileName,
+          type: response.type,
+        };
+
+        this.setState({
+          image,
+        });
+      }
+    });
+  };
   render() {
+    console.log('Image ', this.props.image);
     return (
       <Modal
         animationIn="flipInY"
@@ -23,7 +55,7 @@ class ModalAddCustomer extends React.Component {
           style={{
             alignSelf: 'center',
             backgroundColor: 'white',
-            height: Dimensions.get('window').height * 0.7,
+            height: Dimensions.get('window').height * 0.8,
             width: Dimensions.get('window').width * 0.8,
             borderRadius: 9,
           }}>
@@ -35,7 +67,7 @@ class ModalAddCustomer extends React.Component {
               paddingHorizontal: '6%',
               paddingLeft: 0,
             }}>
-            <Item stackedLabel style={{marginVertical: '6%'}}>
+            <Item stackedLabel style={{marginVertical: '3%'}}>
               <Label>
                 <Text>Name*</Text>
               </Label>
@@ -44,27 +76,41 @@ class ModalAddCustomer extends React.Component {
                 onChangeText={text => this.props.changeName(text)}
               />
             </Item>
-            <Item stackedLabel style={{marginVertical: '6%'}}>
+            <Item stackedLabel style={{marginVertical: '3%'}}>
               <Label>
                 <Text>Identity Number*</Text>
               </Label>
               <Input
+                keyboardType="numeric"
                 value={this.props.identity}
                 onChangeText={text => this.props.changeIdentity(text)}
               />
             </Item>
-            <Item stackedLabel style={{marginVertical: '6%'}}>
+            <Item stackedLabel style={{marginVertical: '3%'}}>
               <Label>
                 <Text>Phone Number*</Text>
               </Label>
               <Input
+                keyboardType="name-phone-pad"
                 value={this.props.phone}
                 onChangeText={text => this.props.changePhone(text)}
               />
             </Item>
             <View style={{marginHorizontal: 10}}>
-              <Text>Photo (Optional)</Text>
-              <Icon name="ios-camera" style={{fontSize: 60, color: 'blue'}} />
+              <Text>Photo (KTP/ SIM/ Paspor)</Text>
+              {this.props.image == '' ? (
+                <View style={{height: 120}} />
+              ) : (
+                <Image
+                  source={{uri: this.props.image.uri || this.props.image}}
+                  style={{width: 160, height: 140}}
+                />
+              )}
+              <Icon
+                onPress={() => this.props.handleAddPhoto()}
+                name="ios-camera"
+                style={{fontSize: 40, color: 'blue', alignSelf: 'center'}}
+              />
             </View>
           </Form>
           <View

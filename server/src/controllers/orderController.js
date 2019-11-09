@@ -77,4 +77,15 @@ module.exports = {
       console.log(error);
     }
   },
+  deleteOrdeById: async (req, res, next) => {
+    const orderId = req.params.orderid;
+    try {
+      await Order.findByIdAndDelete({_id: orderId}).catch(err =>
+        res.json({message: err, success: false}),
+      );
+      res.status(200).json({message: 'Delete success', success: true});
+    } catch (error) {
+      throw new Error('Error delete');
+    }
+  },
 };

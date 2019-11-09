@@ -2,6 +2,7 @@ require('express-group-routes');
 const Express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const serveIndex = require('serve-index');
 const app = Express();
 
 const AuthAdminRoutes = require('./routes/auth');
@@ -13,6 +14,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 
+app.use(
+  '/images',
+  Express.static('uploads/images'),
+  serveIndex('uploads/images', {icons: true}),
+);
 // app.get('*', (req, res) => {
 //   res.json({message: 'Welcome'});
 // });

@@ -210,7 +210,10 @@ class Room extends React.Component {
             marginBottom: 50,
           }}
           onPress={() => this.setState({isModalAdd: true})}>
-          <Icon name="add" />
+          <Icon
+            name="add"
+            style={{color: this.props.DarkMode.isDarkmode ? 'white' : 'blue'}}
+          />
         </Fab>
       </View>
     );

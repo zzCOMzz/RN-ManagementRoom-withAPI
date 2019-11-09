@@ -48,24 +48,21 @@ const BottomTabStack = createBottomTabNavigator(
     },
     Setting: {
       screen: SettingScreen,
-      navigationOptions: {
-        tabBarIcon: ({tintColor}) => (
-          <Icon name="ios-settings" style={{color: tintColor}} />
-        ),
-      },
+      navigationOptions: ({navigation}) => ({
+        tabBarIcon: ({tintColor}) => {
+          return <Icon name="ios-settings" style={{color: tintColor}} />;
+        },
+      }),
     },
   },
   {
     initialRouteName: 'Room',
-    defaultNavigationOptions: ({navigation}) => ({
-      tabBarIcon: ({tintColor}) => {},
-    }),
     tabBarOptions: {
       activeTintColor: '#57606f',
       inactiveTintColor: '#95a5a6',
     },
+    lazy: true,
     tabBarComponent: props => {
-      // console.log('PROPS TABbAR', props);
       let changeMode;
       if (props.navigation.state.routes[3].params === undefined) {
         changeMode = '#fff';
