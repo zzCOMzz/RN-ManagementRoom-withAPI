@@ -61,14 +61,14 @@ const BottomTabStack = createBottomTabNavigator(
       tabBarIcon: ({tintColor}) => {},
     }),
     tabBarOptions: {
-      activeTintColor: 'white',
-      inactiveTintColor: '#a4b0be',
+      activeTintColor: '#57606f',
+      inactiveTintColor: '#95a5a6',
     },
     tabBarComponent: props => {
       // console.log('PROPS TABbAR', props);
       let changeMode;
       if (props.navigation.state.routes[3].params === undefined) {
-        changeMode = '#3360ff';
+        changeMode = '#fff';
       } else {
         changeMode = props.navigation.state.routes[3].params.bottom;
       }
@@ -78,6 +78,21 @@ const BottomTabStack = createBottomTabNavigator(
           style={{
             backgroundColor: changeMode,
             color: 'white',
+            borderStartWidth: 2,
+            borderTopWidth: 1,
+            borderBottomWidth: 1,
+            borderEndWidth: 2,
+            borderStartColor: '#bdc3c7',
+            borderEndColor: '#bdc3c7',
+            borderTopColor: '#bdc3c7',
+            borderBottomColor: '#bdc3c7',
+            borderRadius: 30,
+            position: 'absolute',
+            bottom: 5,
+            marginHorizontal: 10,
+            left: 0,
+            width: '100%',
+            height: 55,
           }}
         />
       );

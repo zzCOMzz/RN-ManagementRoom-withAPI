@@ -4,9 +4,9 @@ import {createReduxContainer} from 'react-navigation-redux-helpers';
 
 import {store} from './src/redux/store';
 import AppStackNavigator from './src/navigator/rootNavigator';
+import codePush from 'react-native-code-push';
 
 const AppNavigation = createReduxContainer(AppStackNavigator, 'root');
-
 const mapStateToProps = state => ({
   state: state.router,
 });
@@ -23,5 +23,10 @@ class App extends React.Component {
     );
   }
 }
+
+App = codePush({
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  installMode: codePush.InstallMode.ON_NEXT_RESUME,
+})(App);
 
 export default App;

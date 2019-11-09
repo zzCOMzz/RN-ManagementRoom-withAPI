@@ -3,10 +3,12 @@ import * as types from '../types';
 const initialState = {
   isDarkmode: false,
   button: '#3360ff',
-  header: '#3360ff',
-  bottom: '#3360ff',
+  header: '#fff',
+  bottom: '#fff',
   text: '#2d3436',
-  background: '#f1f2f6',
+  background: '#fff',
+  status: '#dfe4ea',
+  card: '#fff',
 };
 
 export const setDarkMode = (state = initialState, action) => {
@@ -21,16 +23,18 @@ export const setDarkMode = (state = initialState, action) => {
           background: '#353b48',
           button: '#57606f',
           status: '#2c3e50',
+          card: '#57606f',
         };
       } else {
         return {
           isDarkmode: false,
           button: '#3360ff',
-          header: '#3360ff',
-          bottom: '#3360ff',
+          header: '#fff',
+          bottom: '#fff',
           text: '#2d3436',
-          background: '#f1f2f6',
-          status: '#4a69bd',
+          background: '#fff',
+          status: '#dfe4ea',
+          card: '#fff',
         };
       }
     default:

@@ -10,6 +10,7 @@ import {
   Dimensions,
   Vibration,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import {Icon, Fab} from 'native-base';
 import Header from '../components/header';
@@ -37,12 +38,16 @@ class Room extends React.Component {
       isModalAdd: false,
       inputRoomName: '',
       roomId: '',
+      animRoom: new Animated.Value(0),
     };
   }
   async componentDidMount() {
     const id = await getAdminId();
     const token = await getUserToken();
-
+    Animated.timing(this.state.animRoom, {
+      toValue: 1,
+      duration: 5000,
+    }).start();
     if (!token) {
       Alert.alert('You Are Not Login', 'Please Login First', [
         {text: 'Login', onPress: () => this.props.navigation.navigate('Auth')},
@@ -51,6 +56,7 @@ class Room extends React.Component {
     await this.props.actionGetAllRoom(token, id);
     await this.props.actionGetAllOrder(token, id);
     await this.props.allRoom.data;
+    await this.props.DarkMode;
   }
 
   handleAddNewRoom = async () => {
@@ -94,7 +100,9 @@ class Room extends React.Component {
       ToastAndroid.LONG,
       ToastAndroid.CENTER,
     );
-    Vibration.vibrate(2000);
+    if (this.props.isVibrate) {
+      Vibration.vibrate(2000);
+    }
     await this.props.actionGetAllRoom(token, id);
   };
 
@@ -128,7 +136,11 @@ class Room extends React.Component {
   };
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: this.props.DarkMode.background,
+        }}>
         <ModalAddNewRoom
           title="Update Room"
           isVisible={this.state.isModalVisble}
@@ -147,7 +159,9 @@ class Room extends React.Component {
         />
         <StatusBar
           backgroundColor={this.props.DarkMode.status}
-          barStyle="light-content"
+          barStyle={
+            this.props.DarkMode.isDarkmode ? 'light-content' : 'dark-content'
+          }
         />
         <Header titleText="Room" />
         <ScrollView>
@@ -167,9 +181,21 @@ class Room extends React.Component {
                       this.handleUpdateRoom(item._id, item.room_name)
                     }
                     onLongPress={() => this.handleActionRoom(item)}>
-                    <View style={Styles.containerRoom}>
-                      <Text style={Styles.textRoomName}>{item.room_name}</Text>
-                    </View>
+                    <Animated.View style={{opacity: this.state.animRoom}}>
+                      <View
+                        style={[
+                          Styles.containerRoom,
+                          {
+                            backgroundColor: this.props.DarkMode.isDarkmode
+                              ? '#fff'
+                              : this.props.DarkMode.background,
+                          },
+                        ]}>
+                        <Text style={Styles.textRoomName}>
+                          {item.room_name}
+                        </Text>
+                      </View>
+                    </Animated.View>
                   </TouchableOpacity>
                 );
               })
@@ -179,7 +205,10 @@ class Room extends React.Component {
 
         <Fab
           position="bottomRight"
-          style={{backgroundColor: this.props.DarkMode.button}}
+          style={{
+            backgroundColor: this.props.DarkMode.button,
+            marginBottom: 50,
+          }}
           onPress={() => this.setState({isModalAdd: true})}>
           <Icon name="add" />
         </Fab>
@@ -218,9 +247,9 @@ const Styles = StyleSheet.create({
     shadowOpacity: 0.5,
     elevation: 2,
     shadowColor: '#000',
-    shadowRadius: 8,
-    borderWidth: 5,
-    borderColor: '#ddd',
+    shadowRadius: 12,
+    borderWidth: 3,
+    borderColor: '#a4b0be',
     borderBottomWidth: 0,
     borderRightWidth: 0,
     borderRadius: 4,

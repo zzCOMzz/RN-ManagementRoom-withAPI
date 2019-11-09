@@ -59,7 +59,9 @@ class CheckIn extends React.Component {
   timer = time => {
     let timeLeft = moment(time).diff(moment(), 'seconds');
     if (timeLeft < 1) {
-      Vibration.vibrate([2000, 4000, 2000]);
+      if (this.props.isVibrate) {
+        Vibration.vibrate([2000, 4000, 2000]);
+      }
       return ' Rent Time Out';
     } else {
       return `${timeLeft} seconds left`;
@@ -116,7 +118,7 @@ class CheckIn extends React.Component {
   };
   render() {
     return (
-      <View>
+      <View style={{flex: 1, backgroundColor: this.props.DarkMode.background}}>
         <Header titleText="Check In" />
         <ModalAddNewOrder
           title="CheckIn"

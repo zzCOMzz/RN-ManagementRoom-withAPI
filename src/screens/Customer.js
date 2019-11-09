@@ -151,7 +151,7 @@ class Customer extends React.Component {
   };
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: this.props.DarkMode.background}}>
         <ModalAddCustomer
           title="Update Customer"
           name={this.state.name}
@@ -217,6 +217,9 @@ class Customer extends React.Component {
                       borderColor: 'dimgrey',
                       flexDirection: 'row',
                       padding: 10,
+                      backgroundColor: this.props.DarkMode.isDarkmode
+                        ? '#fff'
+                        : this.props.DarkMode.background,
                     }}>
                     <Image
                       source={{
@@ -258,7 +261,10 @@ class Customer extends React.Component {
         </ScrollView>
 
         <Fab
-          style={{backgroundColor: this.props.DarkMode.button}}
+          style={{
+            backgroundColor: this.props.DarkMode.button,
+            marginBottom: 50,
+          }}
           position="bottomRight"
           active
           onPress={() => this.showModal()}>

@@ -64,7 +64,9 @@ class Setting extends React.Component {
                 }}
               />
               <Body>
-                <Text style={{fontSize: 22}}>Admin</Text>
+                <Text style={{fontSize: 22, color: this.props.darkMode.text}}>
+                  Admin
+                </Text>
                 <Text style={{fontSize: 16}} note>
                   {this.state.username}
                 </Text>
@@ -124,9 +126,7 @@ class Setting extends React.Component {
                 value={this.props.DarkMode.isDarkmode}
                 onValueChange={() => {
                   this.props.navigation.setParams({
-                    bottom: this.props.DarkMode.isDarkmode
-                      ? '#3360ff'
-                      : '#2f3542',
+                    bottom: this.props.DarkMode.isDarkmode ? '#fff' : '#2f3542',
                   });
                   this.props.darkMode(!this.props.DarkMode.isDarkmode);
                 }}

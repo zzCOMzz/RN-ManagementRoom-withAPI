@@ -27,6 +27,7 @@ class LoadingScreen extends React.Component {
     return (
       <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
         <Spinner size="large" color="blue" />
+        <Text>Loading ...</Text>
       </View>
     );
   }

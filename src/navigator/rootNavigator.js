@@ -3,12 +3,20 @@ import {createStackNavigator} from 'react-navigation-stack';
 import {ThemeColor} from '../Assets/constantColor';
 import LoadingScreen from '../screens/Loading';
 import LoginScreen from '../screens/Login';
+import RegisterScreen from '../screens/Register';
 import BottomTabStack from './bottomTabNavigatior';
 import CheckOutScreen from '../screens/CheckOut';
 import HistoryOrderScreen from '../screens/HistoryOrder';
+
 const AuthStack = createStackNavigator({
   Login: {
     screen: LoginScreen,
+    navigationOptions: {
+      header: null,
+    },
+  },
+  Register: {
+    screen: RegisterScreen,
     navigationOptions: {
       header: null,
     },

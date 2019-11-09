@@ -28,7 +28,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 import {Host} from '../functions/Host';
 
-class Login extends React.Component {
+class Register extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -59,12 +59,13 @@ class Login extends React.Component {
     if (username && password) {
       this.setState({isLoading: true});
       axios
-        .post(`${Host}/auth/login`, {
+        .post(`${Host}/auth/register`, {
           username,
           password,
         })
         .then(async res => {
           const {data} = res;
+
           if (data.success) {
             await AsyncStorage.setItem('token', data.token);
             await AsyncStorage.setItem('admin', data.username);
@@ -112,7 +113,7 @@ class Login extends React.Component {
                       fontFamily: 'Roboto',
                       fontWeight: 'bold',
                     }}>
-                    SIGN IN
+                    SIGN UP
                   </Text>
                 </View>
               </View>
@@ -173,7 +174,7 @@ class Login extends React.Component {
                           {isLoading ? (
                             <Spinner color="white" />
                           ) : (
-                            <Text style={Styles.textSign}>Sign In</Text>
+                            <Text style={Styles.textSign}>Sign Up</Text>
                           )}
                         </TouchableOpacity>
                       </LinearGradient>
@@ -189,11 +190,11 @@ class Login extends React.Component {
                 alignItems: 'center',
               }}>
               <Text style={{fontSize: 16, color: 'grey'}}>
-                Haven't Joined Us Yet?
+                Sign In with the Existing account ?
               </Text>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('Register')}>
-                <Text style={{fontSize: 16, color: '#1e272e'}}>Sign Up</Text>
+                onPress={() => this.props.navigation.navigate('Login')}>
+                <Text style={{fontSize: 16, color: '#1e272e'}}>Sign In</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
@@ -203,7 +204,7 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+export default Register;
 
 const Styles = StyleSheet.create({
   headerTop: {
