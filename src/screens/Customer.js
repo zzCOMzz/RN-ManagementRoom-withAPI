@@ -42,6 +42,7 @@ class Customer extends React.Component {
       phoneNumber: '',
       customerId: '',
       image: staticImage,
+      beforeImage: {uri: ''},
     };
   }
 
@@ -59,13 +60,23 @@ class Customer extends React.Component {
   handleAddCustomer = async () => {
     const token = await getUserToken();
     const id = await getAdminId();
-    console.log('State Image ', this.state.image);
+    if (
+      this.state.name == '' ||
+      this.state.phoneNumber == '' ||
+      this.state.identity == '' ||
+      this.state.image == staticImage
+    ) {
+      Alert.alert('Data Must Complete');
+      return;
+    }
 
     const data = new FormData();
     data.append('customerName', this.state.name);
     data.append('customerID', this.state.identity);
     data.append('customerPhone', this.state.phoneNumber);
-    data.append('photo', this.state.image);
+    if (this.state.image !== staticImage) {
+      data.append('photo', this.state.image);
+    }
 
     const res = await addCustomer(data);
     ToastAndroid.showWithGravity(
@@ -84,13 +95,15 @@ class Customer extends React.Component {
     });
   };
 
-  handleGetData = ({name, _id, identity_number, phone_number}) => {
+  handleGetData = ({name, _id, identity_number, phone_number, photo}) => {
     this.setState({
       isModalAddVisible: true,
       name,
       identity: identity_number,
-      phoneNumber: phone_number.toString(),
+      phoneNumber: `${phone_number}`,
       customerId: _id,
+      image: {uri: `${HostImage}${photo}`},
+      beforeImage: {uri: `${HostImage}${photo}`},
     });
   };
 
@@ -101,9 +114,18 @@ class Customer extends React.Component {
     data.append('customerName', this.state.name);
     data.append('customerID', this.state.identity);
     data.append('customerPhone', this.state.phoneNumber);
-    data.append('photo', this.state.image);
 
-    const res = await updateCustomer(data, this.state.customerId);
+    if (this.state.image.uri !== this.state.beforeImage.uri) {
+      data.append('photo', this.state.image);
+    }
+    console.log(data);
+    const res = await updateCustomer(data, this.state.customerId).catch(err => {
+      ToastAndroid.showWithGravity(
+        `${err}`,
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+      );
+    });
 
     ToastAndroid.showWithGravity(
       `${res.data.message}`,
@@ -205,15 +227,18 @@ class Customer extends React.Component {
           phone={this.state.phoneNumber}
           changePhone={text => this.setState({phoneNumber: text})}
           modalVisible={this.state.isModalAddVisible}
-          onCancel={() =>
+          onCancel={() => {
             this.setState({
               isModalAddVisible: false,
               name: '',
               identity: '',
               phoneNumber: '',
               customerId: '',
-            })
-          }
+            });
+            setTimeout(() => {
+              this.setState({image: staticImage});
+            }, 500);
+          }}
           onSubmit={() => this.handleUpdateCustomer()}
         />
         <ModalAddCustomer
@@ -227,15 +252,19 @@ class Customer extends React.Component {
           phone={this.state.phoneNumber}
           changePhone={text => this.setState({phoneNumber: text})}
           modalVisible={this.state.isModalVisible}
-          onCancel={() =>
+          onCancel={() => {
             this.setState({
               isModalVisible: false,
               name: '',
               identity: '',
               phoneNumber: '',
               customerId: '',
-            })
-          }
+              image: staticImage,
+            });
+            setTimeout(() => {
+              this.setState({image: staticImage});
+            }, 500);
+          }}
           onSubmit={() => this.handleAddCustomer()}
         />
         <Header titleText="Customer" />
@@ -244,7 +273,6 @@ class Customer extends React.Component {
             <View />
           ) : (
             this.props.allMyCustomer.data.data.map(item => {
-              console.log('Item ', item);
               return (
                 <Swipeable
                   key={item._id}
@@ -282,10 +310,10 @@ class Customer extends React.Component {
                     <View style={{marginLeft: 10}}>
                       <View>
                         <Text>Name : {item.name}</Text>
-                        <Text>Identity Number : {item.identity_number}</Text>
                         <Text>
-                          Phone Number : +{item.phone_number.toString()}
+                          Identity Number : {`${item.identity_number}`}
                         </Text>
+                        <Text>Phone Number : +{`${item.phone_number}`}</Text>
                       </View>
                       {item.is_order_in_room != undefined ? (
                         item.is_order_in_room.is_booked ? (

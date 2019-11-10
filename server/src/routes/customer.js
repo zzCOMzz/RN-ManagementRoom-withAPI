@@ -12,7 +12,12 @@ router.post(
   CusController.addCustomer,
 );
 router.get('/:id', checkToken, CusController.getAllCus);
-router.put('/:id/:cusid', checkToken, CusController.updateCus);
+router.put(
+  '/:id/:cusid',
+  checkToken,
+  uploadPhotoCustomer.single('photo'),
+  CusController.updateCus,
+);
 router.delete('/:id/:cusid', checkToken, CusController.deleteCus);
 
 module.exports = router;

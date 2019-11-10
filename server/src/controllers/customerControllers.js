@@ -37,25 +37,46 @@ module.exports = {
   updateCus: async (req, res, next) => {
     const adminId = req.params.id;
     const cusName = req.body.customerName;
-    const cusId = req.body.customerId;
+    const cusId = req.body.customerID;
     const cusPhone = req.body.customerPhone;
     const cus_Id = req.params.cusid;
-    try {
-      const updateCus = await Customer.findOneAndUpdate(
-        {_id: cus_Id},
-        {
-          name: cusName,
-          identity_number: cusId,
-          phone_number: cusPhone,
-        },
-        (err, customer) => {
-          if (err) {
-            res.json({message: 'Error On Update', success: false});
-          }
+    const customerPhoto = req.customerPhoto;
 
-          res.json({message: `Customer ${cusName} Updated`, success: true});
-        },
-      );
+    try {
+      if (customerPhoto == undefined) {
+        await Customer.findOneAndUpdate(
+          {_id: cus_Id},
+          {
+            name: cusName,
+            identity_number: cusId,
+            phone_number: cusPhone,
+          },
+          (err, customer) => {
+            if (err) {
+              res.json({message: 'Error On Update', success: false});
+            }
+
+            res.json({message: `Customer ${cusName} Updated`, success: true});
+          },
+        );
+      } else {
+        await Customer.findOneAndUpdate(
+          {_id: cus_Id},
+          {
+            name: cusName,
+            identity_number: cusId,
+            phone_number: cusPhone,
+            photo: customerPhoto,
+          },
+          (err, customer) => {
+            if (err) {
+              res.json({message: 'Error On Update', success: false});
+            }
+
+            res.json({message: `Customer ${cusName} Updated`, success: true});
+          },
+        );
+      }
     } catch (error) {
       console.log(error);
     }

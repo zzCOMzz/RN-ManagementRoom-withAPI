@@ -43,7 +43,6 @@ class ModalAddCustomer extends React.Component {
     });
   };
   render() {
-    console.log('Image ', this.props.image);
     return (
       <Modal
         animationIn="flipInY"
@@ -81,7 +80,7 @@ class ModalAddCustomer extends React.Component {
                 <Text>Identity Number*</Text>
               </Label>
               <Input
-                keyboardType="numeric"
+                keyboardType="numbers-and-punctuation"
                 value={this.props.identity}
                 onChangeText={text => this.props.changeIdentity(text)}
               />

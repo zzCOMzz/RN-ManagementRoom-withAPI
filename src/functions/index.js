@@ -67,7 +67,6 @@ export const deleteRoom = async roomId => {
 };
 
 export const addCustomer = async form => {
-  console.log('#######  FORM ##################', form);
   const token = await getUserToken();
   const id = await getAdminId();
   const response = await axios.post(`${Host}/customer/${id}`, form, {
