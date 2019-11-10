@@ -22,10 +22,15 @@ import {
   deletCustomer,
   getAdminId,
 } from '../functions';
+
+import {HostImage} from '../functions/Host';
 import {connect} from 'react-redux';
 import {actionGetAllCustomer} from '../redux/actions/actionCustomer';
 import ImagePicker from 'react-native-image-picker';
 
+let staticImage = {
+  uri: 'https://png.pngtree.com/svg/20170527/unknown_elephant_5068.png',
+};
 class Customer extends React.Component {
   constructor(props) {
     super(props);
@@ -36,7 +41,7 @@ class Customer extends React.Component {
       identity: '',
       phoneNumber: '',
       customerId: '',
-      image: '',
+      image: staticImage,
     };
   }
 
@@ -56,13 +61,13 @@ class Customer extends React.Component {
     const id = await getAdminId();
     console.log('State Image ', this.state.image);
 
-    const formData = new FormData();
-    formData.append('customerName', this.state.name);
-    formData.append('customerID', this.state.identity);
-    formData.append('customerPhone', this.state.phoneNumber);
-    formData.append('photo', this.state.image);
+    const data = new FormData();
+    data.append('customerName', this.state.name);
+    data.append('customerID', this.state.identity);
+    data.append('customerPhone', this.state.phoneNumber);
+    data.append('photo', this.state.image);
 
-    const res = await addCustomer(formData);
+    const res = await addCustomer(data);
     ToastAndroid.showWithGravity(
       `${res.data.message}`,
       ToastAndroid.LONG,
@@ -75,7 +80,7 @@ class Customer extends React.Component {
       phoneNumber: '',
       customerId: '',
       isModalVisible: false,
-      image: '',
+      image: staticImage,
     });
   };
 
@@ -92,14 +97,13 @@ class Customer extends React.Component {
   handleUpdateCustomer = async () => {
     const token = await getUserToken();
     const id = await getAdminId();
-    const res = await updateCustomer(
-      {
-        customerName: this.state.name,
-        customerId: this.state.identity,
-        customerPhone: this.state.phoneNumber,
-      },
-      this.state.customerId,
-    );
+    const data = new FormData();
+    data.append('customerName', this.state.name);
+    data.append('customerID', this.state.identity);
+    data.append('customerPhone', this.state.phoneNumber);
+    data.append('photo', this.state.image);
+
+    const res = await updateCustomer(data, this.state.customerId);
 
     ToastAndroid.showWithGravity(
       `${res.data.message}`,
@@ -112,7 +116,7 @@ class Customer extends React.Component {
       name: '',
       identity: '',
       phoneNumber: '',
-      image: '',
+      image: staticImage,
     });
   };
 
@@ -162,7 +166,7 @@ class Customer extends React.Component {
       } else {
         const image = {
           uri: response.uri,
-          fileName: response.fileName,
+          name: response.fileName,
           type: response.type,
         };
 
@@ -208,7 +212,6 @@ class Customer extends React.Component {
               identity: '',
               phoneNumber: '',
               customerId: '',
-              image: '',
             })
           }
           onSubmit={() => this.handleUpdateCustomer()}
@@ -231,7 +234,6 @@ class Customer extends React.Component {
               identity: '',
               phoneNumber: '',
               customerId: '',
-              image: '',
             })
           }
           onSubmit={() => this.handleAddCustomer()}
@@ -242,6 +244,7 @@ class Customer extends React.Component {
             <View />
           ) : (
             this.props.allMyCustomer.data.data.map(item => {
+              console.log('Item ', item);
               return (
                 <Swipeable
                   key={item._id}
@@ -267,10 +270,14 @@ class Customer extends React.Component {
                     }}>
                     <Image
                       source={{
-                        uri:
-                          'https://png.pngtree.com/svg/20170527/unknown_elephant_5068.png',
+                        uri: `${HostImage}${item.photo}`,
                       }}
-                      style={{width: 60, height: 60, margin: 10}}
+                      style={{
+                        width: 60,
+                        height: 60,
+                        margin: 10,
+                        borderRadius: 20,
+                      }}
                     />
                     <View style={{marginLeft: 10}}>
                       <View>

@@ -98,14 +98,12 @@ class ModalAddCustomer extends React.Component {
             </Item>
             <View style={{marginHorizontal: 10}}>
               <Text>Photo (KTP/ SIM/ Paspor)</Text>
-              {this.props.image == '' ? (
-                <View style={{height: 120}} />
-              ) : (
-                <Image
-                  source={{uri: this.props.image.uri || this.props.image}}
-                  style={{width: 160, height: 140}}
-                />
-              )}
+
+              <Image
+                source={this.props.image}
+                style={{width: 160, height: 140}}
+              />
+
               <Icon
                 onPress={() => this.props.handleAddPhoto()}
                 name="ios-camera"

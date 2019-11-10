@@ -20,7 +20,12 @@ export const AddNewRoom = async roomName => {
     {
       roomName,
     },
-    {headers: {Authorization: `${token}`}},
+    {
+      headers: {
+        Authorization: `${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    },
   );
   return response;
 };
@@ -62,6 +67,7 @@ export const deleteRoom = async roomId => {
 };
 
 export const addCustomer = async form => {
+  console.log('#######  FORM ##################', form);
   const token = await getUserToken();
   const id = await getAdminId();
   const response = await axios.post(`${Host}/customer/${id}`, form, {
