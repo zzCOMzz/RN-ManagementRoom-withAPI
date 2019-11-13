@@ -5,6 +5,7 @@ import {
   ToastAndroid,
   TouchableOpacity,
   StatusBar,
+  SafeAreaView,
 } from 'react-native';
 import Header from '../components/header';
 import {Form, Item, Input, Label} from 'native-base';
@@ -33,29 +34,6 @@ class CheckOut extends React.Component {
     this.props.actionGetRoomById(token, this.state.roomId, id);
   }
 
-  // startTimer = () => {
-  //   this.clockCall = setInterval(() => {
-  //     this.decrementClock();
-  //   }, 1000 * 60);
-  // };
-
-  // decrementClock = () => {
-  //   if (this.state.duration === 0) {
-  //     clearInterval(this.clockCall);
-  //   }
-  //   this.setState(
-  //     prevState => ({duration: prevState.duration - 1}),
-  //     () => {
-  //       if (this.state.duration === 0) {
-  //         clearInterval(this.clockCall);
-  //       }
-  //     },
-  //   );
-  // };
-  // componentWillUnmount() {
-  //   clearInterval(this.clockCall);
-  // }
-
   handleCheckOut = async () => {
     const token = await getUserToken();
     const id = await getAdminId();
@@ -75,11 +53,8 @@ class CheckOut extends React.Component {
   };
 
   render() {
-    console.log('DURATION', this.state.duration);
-
     return (
       <View>
-        <StatusBar hidden />
         <Header
           titleText="Check Out"
           stylesHeader={{backgroundColor: '#4cd137', height: 50}}

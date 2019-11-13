@@ -5,7 +5,8 @@ import IconFA from 'react-native-vector-icons/FontAwesome';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
 import {createBottomTabNavigator, BottomTabBar} from 'react-navigation-tabs';
 
-import {connect} from 'react-redux';
+import {createStackNavigator} from 'react-navigation-stack';
+import {fromBottom} from 'react-navigation-transitions';
 
 // ? import Screen
 import CheckInScreen from '../screens/CheckIn';
@@ -13,14 +14,27 @@ import RoomScreen from '../screens/Room';
 import CustomerScreen from '../screens/Customer';
 import SettingScreen from '../screens/Setting';
 
-import {ThemeColor} from '../Assets/constantColor';
-
 const TabBarComponent = props => <BottomTabBar {...props} />;
+
+const CheckinStack = createStackNavigator(
+  {
+    CheckIn: {
+      screen: CheckInScreen,
+      navigationOptions: {
+        header: null,
+      },
+    },
+  },
+  {
+    initialRouteName: 'CheckIn',
+    transitionConfig: () => fromBottom(2000),
+  },
+);
 
 const BottomTabStack = createBottomTabNavigator(
   {
     CheckIn: {
-      screen: CheckInScreen,
+      screen: CheckinStack,
       navigationOptions: {
         tabBarLabel: 'CheckIn',
         tabBarIcon: ({tintColor}) => (

@@ -1,6 +1,6 @@
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import {ThemeColor} from '../Assets/constantColor';
+import {fromBottom} from 'react-navigation-transitions';
 import LoadingScreen from '../screens/Loading';
 import LoginScreen from '../screens/Login';
 import RegisterScreen from '../screens/Register';
@@ -31,34 +31,41 @@ const LoadingStack = createStackNavigator({
     },
   },
 });
-const AppStackNavigator = createStackNavigator({
-  BottomTab: {
-    screen: BottomTabStack,
-    navigationOptions: {
-      header: null,
+const AppStackNavigator = createStackNavigator(
+  {
+    BottomTab: {
+      screen: BottomTabStack,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    CheckOut: {
+      screen: CheckOutScreen,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    History: {
+      screen: HistoryOrderScreen,
+      navigationOptions: ({navigation}) => {
+        return {
+          headerTitle: 'History Customer',
+          headerTitleStyle: {
+            color: navigation.getParam('text'),
+          },
+          headerStyle: {
+            backgroundColor: navigation.getParam('header'),
+          },
+        };
+      },
     },
   },
-  CheckOut: {
-    screen: CheckOutScreen,
-    navigationOptions: {
-      header: null,
-    },
+  {
+    transitionConfig: () => fromBottom(2000),
+    mode: 'modal',
+    cardOverlayEnabled: true,
   },
-  History: {
-    screen: HistoryOrderScreen,
-    navigationOptions: ({navigation}) => {
-      return {
-        headerTitle: 'History Customer',
-        headerTitleStyle: {
-          color: navigation.getParam('text'),
-        },
-        headerStyle: {
-          backgroundColor: navigation.getParam('header'),
-        },
-      };
-    },
-  },
-});
+);
 
 const AppStack = createSwitchNavigator(
   {

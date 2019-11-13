@@ -4,8 +4,9 @@ const OrderModel = require('../models/order');
 module.exports = {
   addNewRoom: async (req, res, next) => {
     const adminId = req.params.id;
+    const roomName = req.body.roomName;
+
     try {
-      const roomName = req.body.roomName;
       const newRoom = await new Room({
         room_name: roomName,
         admin_id: adminId,

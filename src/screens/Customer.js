@@ -70,15 +70,20 @@ class Customer extends React.Component {
       return;
     }
 
-    const data = new FormData();
-    data.append('customerName', this.state.name);
-    data.append('customerID', this.state.identity);
-    data.append('customerPhone', this.state.phoneNumber);
-    if (this.state.image !== staticImage) {
-      data.append('photo', this.state.image);
-    }
+    const dataForm = new FormData();
+    dataForm.append('customerName', this.state.name);
+    dataForm.append('customerID', this.state.identity);
+    dataForm.append('customerPhone', this.state.phoneNumber);
 
-    const res = await addCustomer(data);
+    dataForm.append('photo', this.state.image);
+
+    const res = await addCustomer(dataForm).catch(err =>
+      ToastAndroid.showWithGravity(
+        `${err}`,
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+      ),
+    );
     ToastAndroid.showWithGravity(
       `${res.data.message}`,
       ToastAndroid.LONG,
@@ -118,7 +123,6 @@ class Customer extends React.Component {
     if (this.state.image.uri !== this.state.beforeImage.uri) {
       data.append('photo', this.state.image);
     }
-    console.log(data);
     const res = await updateCustomer(data, this.state.customerId).catch(err => {
       ToastAndroid.showWithGravity(
         `${err}`,

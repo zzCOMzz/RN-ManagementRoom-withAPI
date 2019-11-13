@@ -90,7 +90,7 @@ class ModalAddCustomer extends React.Component {
                 <Text>Phone Number*</Text>
               </Label>
               <Input
-                keyboardType="name-phone-pad"
+                keyboardType="number-pad"
                 value={this.props.phone}
                 onChangeText={text => this.props.changePhone(text)}
               />

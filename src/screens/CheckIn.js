@@ -49,7 +49,7 @@ class CheckIn extends React.Component {
       await this.props.dispatchRoom(token, id);
       // this.timer();
       this.props.allRoom;
-    }, 1000 * 30);
+    }, 1000 * 5);
   }
 
   onClickRoom = (roomName, roomId) => {

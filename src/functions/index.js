@@ -23,7 +23,6 @@ export const AddNewRoom = async roomName => {
     {
       headers: {
         Authorization: `${token}`,
-        'Content-Type': 'multipart/form-data',
       },
     },
   );

@@ -61,7 +61,6 @@ class Room extends React.Component {
 
   handleAddNewRoom = async () => {
     const response = await AddNewRoom(this.state.inputRoomName);
-
     ToastAndroid.showWithGravity(
       `${response.data.message}`,
       ToastAndroid.LONG,
@@ -144,7 +143,9 @@ class Room extends React.Component {
         <ModalAddNewRoom
           title="Update Room"
           isVisible={this.state.isModalVisble}
-          onCancel={() => this.setState({isModalVisble: false})}
+          onCancel={() =>
+            this.setState({isModalVisble: false, inputRoomName: ''})
+          }
           inputChangeValue={text => this.setState({inputRoomName: text})}
           inputValue={this.state.inputRoomName}
           onSubmit={() => this.handleUpdateNewRoom()}
@@ -152,7 +153,7 @@ class Room extends React.Component {
         <ModalAddNewRoom
           title="Add New Room"
           isVisible={this.state.isModalAdd}
-          onCancel={() => this.setState({isModalAdd: false})}
+          onCancel={() => this.setState({isModalAdd: false, inputRoomName: ''})}
           inputChangeValue={text => this.setState({inputRoomName: text})}
           inputValue={this.state.inputRoomName}
           onSubmit={() => this.handleAddNewRoom()}
@@ -169,6 +170,7 @@ class Room extends React.Component {
             style={{
               flexWrap: 'wrap',
               flexDirection: 'row',
+              justifyContent: 'center',
             }}>
             {this.props.allRoom.data <= 0 ? (
               <View />
@@ -257,7 +259,7 @@ const Styles = StyleSheet.create({
     borderRightWidth: 0,
     borderRadius: 4,
     height: Dimensions.get('screen').height / 9,
-    width: Dimensions.get('screen').width * 0.28,
+    width: Dimensions.get('screen').width * 0.25,
     margin: 10,
     paddingTop: 15,
   },
